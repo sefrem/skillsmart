@@ -1,7 +1,7 @@
 from linked_list import LinkedList, Node
 
 
-def make_list(linked_list_a, linked_list_b):
+def sum_lists(linked_list_a, linked_list_b):
     if linked_list_a.len() == linked_list_b.len():
         new_list = LinkedList()
         node_a = linked_list_a.head
