@@ -79,15 +79,15 @@ class LinkedList:
         node = self.head
         if afterNode is None:
             if node is None:
-                self.add_in_tail(Node(newNode))
+                self.add_in_tail(newNode)
                 return
-            self.head = Node(newNode)
+            self.head = newNode
             self.head.next = node
             return
 
         while node is not None:
-            if node.value == afterNode:
-                new_node = Node(newNode)
+            if node.value == afterNode.value:
+                new_node = newNode
                 if node.next is None:
                     self.tail = new_node
                 new_node.next = node.next

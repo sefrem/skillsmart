@@ -273,7 +273,7 @@ class TestLinkedList(unittest.TestCase):
         """
         Тестирует добавление узла в середину списка
         """
-        self.list.insert(24, 100)
+        self.list.insert(Node(24), Node(100))
 
         expected_list = LinkedList() \
             .add_in_tail(Node(12)) \
@@ -289,7 +289,7 @@ class TestLinkedList(unittest.TestCase):
         """
         Тестирует добавление узла в конец списка
         """
-        self.list.insert(36, 100)
+        self.list.insert(Node(36), Node(100))
 
         expected_list = LinkedList() \
             .add_in_tail(Node(12)) \
@@ -306,7 +306,7 @@ class TestLinkedList(unittest.TestCase):
         """
         Тестирует добавление узла в начало списка
         """
-        self.list.insert(None, 100)
+        self.list.insert(None, Node(100))
 
         expected_list = LinkedList() \
             .add_in_tail(Node(100)) \
@@ -326,7 +326,7 @@ class TestLinkedList(unittest.TestCase):
         test_list = LinkedList()
         expected_list = LinkedList().add_in_tail(Node(100))
 
-        test_list.insert(None, 100)
+        test_list.insert(None, Node(100))
 
         self.assert_lists_equality(expected_list, test_list)
         self.assertEqual(test_list.head.value, expected_list.head.value)
