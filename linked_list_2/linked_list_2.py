@@ -75,13 +75,10 @@ class LinkedList2:
 
     def insert(self, afterNode, newNode):
         node = self.head
-        if afterNode is None and not self.head:
+        if afterNode is None:
             self.add_in_tail(newNode)
             return
         while node is not None:
-            if afterNode is None:
-                self.add_in_tail(newNode)
-                return
             if node.value == afterNode.value:
                 newNode.prev = node
                 newNode.next = node.next
