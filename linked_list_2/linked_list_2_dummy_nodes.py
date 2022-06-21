@@ -36,7 +36,7 @@ class LinkedList2:
 
     def find(self, val):
         node = self.dummyHead.next
-        while node.value is not False:
+        while isinstance(node, Node):
             if node.value == val:
                 return node
             node = node.next
@@ -45,7 +45,7 @@ class LinkedList2:
     def find_all(self, val):
         found_nodes = []
         node = self.dummyHead.next
-        while node.value is not False:
+        while isinstance(node, Node):
             if node.value == val:
                 found_nodes.append(node)
             node = node.next
@@ -53,7 +53,7 @@ class LinkedList2:
 
     def delete(self, val, all=False):
         node = self.dummyHead.next
-        while node.value is not False:
+        while isinstance(node, Node):
             if node.value == val:
                 node.prev.next = node.next
                 node.next.prev = node.prev
@@ -64,10 +64,10 @@ class LinkedList2:
 
     def insert(self, afterNode, newNode):
         node = self.dummyHead.next
-        if node.value is False or afterNode is None:
+        if isinstance(node, DummyNode) or afterNode is None:
             self.add_in_tail(newNode)
             return
-        while node.value is not False:
+        while isinstance(node, Node):
             if node.value == afterNode.value:
                 newNode.prev = node
                 newNode.next = node.next
@@ -88,7 +88,7 @@ class LinkedList2:
     def len(self):
         node = self.dummyHead.next
         len = 0
-        while node.value is not False:
+        while isinstance(node, Node):
             len += 1
             node = node.next
         return len
