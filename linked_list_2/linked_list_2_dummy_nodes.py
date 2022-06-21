@@ -7,26 +7,27 @@ class Node:
 
 class LinkedList2:
     def __init__(self):
-        self.dummy = Node(False)
-        self.dummy.next = self.dummy
-        self.dummy.prev = self.dummy
+        self.dummyHead = Node(False)
+        self.dummyTail = Node(False)
+        self.dummyHead.next = self.dummyTail
+        self.dummyTail.prev = self.dummyHead
 
     def add_in_tail(self, item):
-        if self.dummy.next is self.dummy:
-            item.prev = self.dummy
-            item.next = self.dummy
-            self.dummy.next = item
-            self.dummy.prev = item
+        if self.dummyHead.next is self.dummyTail:
+            item.next = self.dummyTail
+            item.prev = self.dummyHead
+            self.dummyTail.prev = item
+            self.dummyHead.next = item
         else:
-            item.prev = self.dummy.prev
-            item.next = self.dummy
-            self.dummy.prev.next = item
-            self.dummy.prev = item
-
+            last_item = self.dummyTail.prev
+            self.dummyTail.prev = item
+            item.prev = last_item
+            item.next = self.dummyTail
+            last_item.next = item
         return self
 
     def find(self, val):
-        node = self.dummy.next
+        node = self.dummyHead.next
         while node.value is not False:
             if node.value == val:
                 return node
@@ -35,7 +36,7 @@ class LinkedList2:
 
     def find_all(self, val):
         found_nodes = []
-        node = self.dummy.next
+        node = self.dummyHead.next
         while node.value is not False:
             if node.value == val:
                 found_nodes.append(node)
@@ -43,7 +44,7 @@ class LinkedList2:
         return found_nodes
 
     def delete(self, val, all=False):
-        node = self.dummy.next
+        node = self.dummyHead.next
         while node.value is not False:
             if node.value == val:
                 node.prev.next = node.next
@@ -54,7 +55,7 @@ class LinkedList2:
             node = node.next
 
     def insert(self, afterNode, newNode):
-        node = self.dummy.next
+        node = self.dummyHead.next
         if node.value is False or afterNode is None:
             self.add_in_tail(newNode)
             return
@@ -68,16 +69,16 @@ class LinkedList2:
             node = node.next
 
     def add_in_head(self, newNode):
-        newNode.next = self.dummy.next
-        newNode.prev = self.dummy
-        self.dummy.next.prev = newNode
-        self.dummy.next = newNode
+        newNode.next = self.dummyHead.next
+        newNode.prev = self.dummyHead
+        self.dummyHead.next.prev = newNode
+        self.dummyHead.next = newNode
 
     def clean(self):
         self.__init__()
 
     def len(self):
-        node = self.dummy.next
+        node = self.dummyHead.next
         len = 0
         while node.value is not False:
             len += 1
