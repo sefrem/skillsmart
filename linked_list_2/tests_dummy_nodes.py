@@ -23,7 +23,6 @@ class TestLinkedList2(unittest.TestCase):
             .add_in_tail(Node(36))
 
     def assert_lists_equality(self, list1, list2):
-        print(type(list1), type(list2), type(list1) == type(list2))
         self.assertEqual(get_list_values(list1), get_list_values(list2))
 
     def test_find_one_node_in_list(self):

@@ -5,25 +5,33 @@ class Node:
         self.next = None
 
 
+class DummyNode:
+    def __init__(self):
+        self.value = False
+        self.prev = None
+        self.next = None
+
+
 class LinkedList2:
     def __init__(self):
-        self.dummyHead = Node(False)
-        self.dummyTail = Node(False)
+        self.dummyHead = DummyNode()
+        self.dummyTail = DummyNode()
         self.dummyHead.next = self.dummyTail
         self.dummyTail.prev = self.dummyHead
 
     def add_in_tail(self, item):
-        if self.dummyHead.next is self.dummyTail:
+        if isinstance(self.dummyHead.next, DummyNode) and isinstance(self.dummyTail, DummyNode):
             item.next = self.dummyTail
             item.prev = self.dummyHead
             self.dummyTail.prev = item
             self.dummyHead.next = item
         else:
             last_item = self.dummyTail.prev
-            self.dummyTail.prev = item
             item.prev = last_item
             item.next = self.dummyTail
             last_item.next = item
+            self.dummyTail.prev = item
+
         return self
 
     def find(self, val):
