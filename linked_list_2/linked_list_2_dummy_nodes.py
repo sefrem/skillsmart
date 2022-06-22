@@ -20,7 +20,7 @@ class LinkedList2:
         self.dummyTail.prev = self.dummyHead
 
     def add_in_tail(self, item):
-        if isinstance(self.dummyHead.next, DummyNode) and isinstance(self.dummyTail, DummyNode):
+        if isinstance(self.dummyHead.next, DummyNode):
             item.next = self.dummyTail
             item.prev = self.dummyHead
             self.dummyTail.prev = item
