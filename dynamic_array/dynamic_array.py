@@ -53,7 +53,7 @@ class DynArray:
         self.count += 1
 
     def delete(self, i):
-        if i < 0 or i > self.count:
+        if i < 0 or i > self.count or self.count == 0:
             raise IndexError('Index is out of bounds')
         new_array = self.make_array(self.capacity)
         for k in range(self.count):
