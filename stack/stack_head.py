@@ -8,13 +8,13 @@ class Stack:
         return len(self.stack)
 
     def pop(self):
-        item = self.stack.pop(self.size()-1)
-        return item if item else None
+        if self.size() == 0:
+            return None
+        return self.stack.pop(0)
 
     def push(self, value):
-        self.stack.append(value)
+        self.stack.insert(0, value)
         return self
 
     def peek(self):
-        # ваш код
-        return None
+        return self.stack[0]
