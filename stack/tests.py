@@ -40,6 +40,11 @@ class TestStackTailTop(unittest.TestCase):
         for i in range(len(expected_stack)):
             self.assertEqual(expected_stack[i], test_stack.stack[i])
 
+    def test_peek_empty_stack(self):
+        test_stack = StackTailTop()
+
+        self.assertEqual(None, test_stack.peek())
+
 class TestStackHeadTop(unittest.TestCase):
 
     def test_push_to_stack(self):
@@ -75,3 +80,8 @@ class TestStackHeadTop(unittest.TestCase):
         self.assertEqual(3, test_stack.peek())
         for i in range(len(expected_stack)):
             self.assertEqual(expected_stack[i], test_stack.stack[i])
+
+    def test_peek_empty_stack(self):
+        test_stack = StackHeadTop()
+
+        self.assertEqual(None, test_stack.peek())
