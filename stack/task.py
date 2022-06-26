@@ -5,6 +5,9 @@ from operator import add, sub, mul, truediv
 def is_balanced(value: str):
     stack = Stack()
 
+    if value[0] == ')':
+        return False
+
     for char in value:
         if char == '(':
             stack.push(1)
@@ -38,7 +41,7 @@ def calculate_postfix(value: list):
         if i == '=':
             return result.pop()
 
-        result.push(operators[i](result.pop(), result.pop()))
+        result.push(operators[i](abs(result.pop()), abs(result.pop())))
 
 
 

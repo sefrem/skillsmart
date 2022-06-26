@@ -96,14 +96,18 @@ class TestIsBalanced(unittest.TestCase):
         self.assertTrue(is_balanced(test_case))
 
     def test_unbalanced_str(self):
-        test_case = "())("
+        test_case_1 = "())("
+        test_case_2 = ")))"
 
-        self.assertFalse(is_balanced(test_case))
+        self.assertFalse(is_balanced(test_case_1))
+        self.assertFalse(is_balanced(test_case_2))
 
 
 class TestCalculatePostfix(unittest.TestCase):
     def test_calculate_postfix(self):
-        test_case = ['=', '+', 9, '*', 5, '+', 2, 8]
+        test_case_1 = ['=', '+', 9, '*', 5, '-', 2, 8]
+        test_case_2 = ['=', '+', 9, '*', 5, '+', 2, 8]
 
-        self.assertEqual(calculate_postfix(test_case), 59)
+        self.assertEqual(calculate_postfix(test_case_1), 39)
+        self.assertEqual(calculate_postfix(test_case_2), 59)
 
