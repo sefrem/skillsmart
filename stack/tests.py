@@ -104,12 +104,18 @@ class TestIsBalanced(unittest.TestCase):
 
 
 class TestCalculatePostfix(unittest.TestCase):
-    def test_calculate_postfix(self):
-        test_case_1 = ['=', '+', 9, '*', 5, '-', 2, 8]
-        test_case_2 = ['=', '+', 9, '*', 5, '+', 2, 8]
-        test_case_3 = ['=', '+', 9, '*', 5, '/', 2, 8]
+    def test_calculate_postfix_subtr(self):
+        test_case = ['=', '+', 9, '*', 5, '-', 2, 8]
 
-        self.assertEqual(calculate_postfix(test_case_1), 39)
-        self.assertEqual(calculate_postfix(test_case_2), 59)
-        self.assertEqual(calculate_postfix(test_case_3), 29)
+        self.assertEqual(calculate_postfix(test_case), 39)
+
+    def test_calculate_postfix_add(self):
+        test_case = ['=', '+', 9, '*', 5, '+', 2, 8]
+
+        self.assertEqual(calculate_postfix(test_case), 59)
+
+    def test_calculate_postfix_div(self):
+        test_case = ['=', '+', 9, '*', 5, '/', 2, 8]
+
+        self.assertEqual(calculate_postfix(test_case), 29)
 
