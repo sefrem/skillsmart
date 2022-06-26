@@ -2,6 +2,7 @@ import unittest
 
 from stack_head import Stack as StackHeadTop
 from stack_tail import Stack as StackTailTop
+from task import is_balanced, calculate_postfix
 
 
 class TestStackTailTop(unittest.TestCase):
@@ -86,3 +87,23 @@ class TestStackHeadTop(unittest.TestCase):
         test_stack = StackHeadTop()
 
         self.assertEqual(None, test_stack.peek())
+
+
+class TestIsBalanced(unittest.TestCase):
+    def test_balanced_str(self):
+        test_case = "(()((())()))"
+
+        self.assertTrue(is_balanced(test_case))
+
+    def test_unbalanced_str(self):
+        test_case = "())("
+
+        self.assertFalse(is_balanced(test_case))
+
+
+class TestCalculatePostfix(unittest.TestCase):
+    def test_calculate_postfix(self):
+        test_case = ['=', '+', 9, '*', 5, '+', 2, 8]
+
+        self.assertEqual(calculate_postfix(test_case), 59)
+
