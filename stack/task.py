@@ -41,7 +41,9 @@ def calculate_postfix(value: list):
         if i == '=':
             return result.pop()
 
-        result.push(abs(operators[i](result.pop(), result.pop())))
+        last = result.pop()
+        prev_last = result.pop()
+        result.push(operators[i](prev_last, last))
 
 
 

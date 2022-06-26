@@ -107,7 +107,9 @@ class TestCalculatePostfix(unittest.TestCase):
     def test_calculate_postfix(self):
         test_case_1 = ['=', '+', 9, '*', 5, '-', 2, 8]
         test_case_2 = ['=', '+', 9, '*', 5, '+', 2, 8]
+        test_case_3 = ['=', '+', 9, '*', 5, '/', 2, 8]
 
         self.assertEqual(calculate_postfix(test_case_1), 39)
         self.assertEqual(calculate_postfix(test_case_2), 59)
+        self.assertEqual(calculate_postfix(test_case_3), 29)
 
