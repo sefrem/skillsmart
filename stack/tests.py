@@ -45,6 +45,7 @@ class TestStackTailTop(unittest.TestCase):
 
         self.assertEqual(None, test_stack.peek())
 
+
 class TestStackHeadTop(unittest.TestCase):
 
     def test_push_to_stack(self):
