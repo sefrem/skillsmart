@@ -3,16 +3,18 @@ from operator import add, sub, mul, truediv
 
 
 def is_balanced(value: str):
-    stack = Stack()
-
-    if value[0] == ')':
+    if len(value) == 0:
         return False
+
+    stack = Stack()
 
     for char in value:
         if char == '(':
             stack.push(1)
         else:
-            stack.pop()
+            i = stack.pop()
+            if not i:
+                return False
 
     return True if stack.size() == 0 else False
 
@@ -44,6 +46,3 @@ def calculate_postfix(value: list):
         last = result.pop()
         prev_last = result.pop()
         result.push(operators[i](prev_last, last))
-
-
-

@@ -98,9 +98,13 @@ class TestIsBalanced(unittest.TestCase):
     def test_unbalanced_str(self):
         test_case_1 = "())("
         test_case_2 = ")))"
+        test_case_3 = "()))"
+        test_case_4 = ""
 
         self.assertFalse(is_balanced(test_case_1))
         self.assertFalse(is_balanced(test_case_2))
+        self.assertFalse(is_balanced(test_case_3))
+        self.assertFalse(is_balanced(test_case_4))
 
 
 class TestCalculatePostfix(unittest.TestCase):
