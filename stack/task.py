@@ -16,10 +16,7 @@ def is_balanced(value: str):
                 return False
             stack.pop()
 
-    if stack.size() == 0:
-        return True
-
-    return False
+    return stack.size() == 0
 
 
 def calculate_postfix(value: list):
