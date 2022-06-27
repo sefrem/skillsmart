@@ -12,11 +12,11 @@ def is_balanced(value: str):
         if char == '(':
             stack.push(1)
         else:
-            i = stack.pop()
-            if not i:
+            if stack.size() == 0:
                 return False
+            stack.pop()
 
-    return True if stack.size() == 0 else False
+    return True
 
 
 def calculate_postfix(value: list):
