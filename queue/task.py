@@ -7,11 +7,11 @@ def turn_queue(queue, n):
 
     stack = Stack()
 
-    for i in range(n):
-        stack.push(queue.dequeue())
-
-    while stack.size() > 0:
-        queue.enqueue(stack.pop())
+    for i in range(n*2):
+        if i < n:
+            stack.push(queue.dequeue())
+        else:
+            queue.enqueue(stack.pop())
 
     return queue
 
@@ -24,18 +24,19 @@ class StackQueue:
     def enqueue(self, item):
         if self.stack_out.size() == 0:
             self.stack_out.push(item)
-            return self
-
-        while self.stack_out.size() > 0:
-            self.stack_in.push(self.stack_out.pop())
-        self.stack_out.push(item)
-        while self.stack_in.size() > 0:
-            self.stack_out.push(self.stack_in.pop())
+        else:
+            self.stack_in.push(item)
 
         return self
 
     def dequeue(self):
-        return self.stack_out.pop()
+        item = self.stack_out.pop()
+
+        if self.stack_out.size() == 0:
+            while self.stack_in.size():
+                self.stack_out.push(self.stack_in.pop())
+
+        return item
 
     def size(self):
-        return self.stack_out.size()
+        return self.stack_in.size() + self.stack_out.size()
