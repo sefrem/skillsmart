@@ -7,7 +7,7 @@ def turn_queue(queue, n):
     i = 0
 
     def turn():
-        nonlocal i, queue
+        nonlocal i
 
         if i == n:
             return queue
