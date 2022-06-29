@@ -22,21 +22,15 @@ class StackQueue:
         self.stack_out = Stack()
 
     def enqueue(self, item):
-        if self.stack_out.size() == 0:
-            self.stack_out.push(item)
-        else:
-            self.stack_in.push(item)
-
+        self.stack_in.push(item)
         return self
 
     def dequeue(self):
-        item = self.stack_out.pop()
-
         if self.stack_out.size() == 0:
             while self.stack_in.size():
                 self.stack_out.push(self.stack_in.pop())
 
-        return item
+        return self.stack_out.pop()
 
     def size(self):
         return self.stack_in.size() + self.stack_out.size()

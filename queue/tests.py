@@ -100,13 +100,12 @@ class TestStackQueue(unittest.TestCase):
 
         queue.enqueue(1)
 
-        self.assertEqual([1], queue.stack_out.stack)
+        self.assertEqual([1], queue.stack_in.stack)
 
     def test_enqueue_few_items(self):
         queue = StackQueue().enqueue(1).enqueue(2).enqueue(3)
 
-        self.assertEqual([2, 3], queue.stack_in.stack)
-        self.assertEqual([1], queue.stack_out.stack)
+        self.assertEqual([1, 2, 3], queue.stack_in.stack)
 
     def test_dequeue_one_item(self):
         queue = StackQueue().enqueue(1).enqueue(2).enqueue(3)
@@ -133,6 +132,13 @@ class TestStackQueue(unittest.TestCase):
         queue = StackQueue().enqueue(1).enqueue(2).enqueue(3)
 
         self.assertEqual(3, queue.size())
+
+    def test_get_queue_size_after_dequeue(self):
+        queue = StackQueue().enqueue(1).enqueue(2).enqueue(3)
+
+        queue.dequeue()
+
+        self.assertEqual(2, queue.size())
 
     def test_get_queue_size_with_1_item(self):
         queue = StackQueue().enqueue(1)
