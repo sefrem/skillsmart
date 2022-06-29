@@ -4,16 +4,22 @@ from stack.stack_tail import Stack
 def turn_queue(queue, n):
     if n > queue.size():
         return None
+    i = 0
 
-    stack = Stack()
+    def turn():
+        nonlocal i, queue
 
-    for i in range(n*2):
-        if i < n:
-            stack.push(queue.dequeue())
-        else:
-            queue.enqueue(stack.pop())
+        if i == n:
+            return queue
 
-    return queue
+        i += 1
+        item = queue.dequeue()
+        turn()
+        queue.enqueue(item)
+
+        return queue
+
+    return turn()
 
 
 class StackQueue:
@@ -23,7 +29,6 @@ class StackQueue:
 
     def enqueue(self, item):
         self.stack_in.push(item)
-        return self
 
     def dequeue(self):
         if self.stack_out.size() == 0:
