@@ -2,13 +2,8 @@ from stack.stack_tail import Stack
 
 
 def turn_queue(queue, n):
-    if n > queue.size():
-        return None
-
     for i in range(n):
         queue.enqueue(queue.dequeue())
-
-    return queue
 
 
 class StackQueue:

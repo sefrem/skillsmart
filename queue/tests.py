@@ -67,30 +67,32 @@ class TestQueueTask(unittest.TestCase):
         self.queue = Queue().enqueue(1).enqueue(2).enqueue(3).enqueue(4).enqueue(5)
 
     def test_queue_turn_2(self):
-        expected_queue = Queue().enqueue(3).enqueue(4).enqueue(5).enqueue(2).enqueue(1)
+        expected_queue = Queue().enqueue(3).enqueue(4).enqueue(5).enqueue(1).enqueue(2)
 
-        test_queue = turn_queue(self.queue, 2)
+        turn_queue(self.queue, 2)
 
-        self.assert_queues_equality(expected_queue, test_queue)
+        self.assert_queues_equality(expected_queue, self.queue)
 
     def test_queue_turn_4(self):
-        expected_queue = Queue().enqueue(5).enqueue(4).enqueue(3).enqueue(2).enqueue(1)
+        expected_queue = Queue().enqueue(5).enqueue(1).enqueue(2).enqueue(3).enqueue(4)
 
-        test_queue = turn_queue(self.queue, 4)
+        turn_queue(self.queue, 4)
 
-        self.assert_queues_equality(expected_queue, test_queue)
+        self.assert_queues_equality(expected_queue, self.queue)
 
     def test_queue_turn_all(self):
-        expected_queue = Queue().enqueue(5).enqueue(4).enqueue(3).enqueue(2).enqueue(1)
+        expected_queue = Queue().enqueue(1).enqueue(2).enqueue(3).enqueue(4).enqueue(5)
 
-        test_queue = turn_queue(self.queue, 5)
+        turn_queue(self.queue, 5)
 
-        self.assert_queues_equality(expected_queue, test_queue)
+        self.assert_queues_equality(expected_queue, self.queue)
 
     def test_queue_turn_greater_than_length(self):
-        test_queue = turn_queue(self.queue, 6)
+        expected_queue = Queue().enqueue(2).enqueue(3).enqueue(4).enqueue(5).enqueue(1)
 
-        self.assertEqual(None, test_queue)
+        turn_queue(self.queue, 6)
+
+        self.assert_queues_equality(expected_queue, self.queue)
 
 
 class TestStackQueue(unittest.TestCase):
