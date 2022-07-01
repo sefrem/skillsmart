@@ -1,6 +1,7 @@
 import unittest
 
 from deque import Deque
+from task import is_palindrome
 
 
 class TestDeque(unittest.TestCase):
@@ -62,7 +63,6 @@ class TestDeque(unittest.TestCase):
 
         self.assertEqual(3, deque.size())
 
-
     def test_get_size_empty_deque(self):
         deque = Deque()
 
@@ -98,3 +98,21 @@ class TestDeque(unittest.TestCase):
         deque = Deque()
 
         self.assertEqual(None, deque.removeTail())
+
+
+class TestDequeTask(unittest.TestCase):
+
+    def test_is_odd_palindrome(self):
+        value = 'Tacocat'
+
+        self.assertTrue(is_palindrome(value))
+
+    def test_is_even_palindrome(self):
+        value = 'anna'
+
+        self.assertTrue(is_palindrome(value))
+
+    def test_is_not_palindrome(self):
+        value = 'asddasdd'
+
+        self.assertFalse(is_palindrome(value))
