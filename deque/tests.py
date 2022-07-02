@@ -112,6 +112,11 @@ class TestDequeTask(unittest.TestCase):
 
         self.assertTrue(is_palindrome(value))
 
+    def test_is_palindrome_with_spaces(self):
+        value = 'A Taco cata'
+
+        self.assertTrue(is_palindrome(value))
+
     def test_is_not_palindrome(self):
         value = 'asddasdd'
 
