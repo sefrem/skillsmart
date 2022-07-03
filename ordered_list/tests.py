@@ -26,7 +26,7 @@ class TestOrderedList(unittest.TestCase):
 
         self.assertEqual([(None, 1), (1, None)], get_list_values(ordered_list))
         self.assertEqual(1, ordered_list.head.value)
-        self.assertEqual(None, ordered_list.tail)
+        self.assertEqual(1, ordered_list.tail.value)
 
     def test_adding_2_items_to_empty_list(self):
         ordered_list = OrderedList(True)

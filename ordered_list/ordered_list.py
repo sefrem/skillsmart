@@ -24,17 +24,9 @@ class OrderedList:
             self.head = item
             item.prev = None
             item.next = None
-            return
-        if self.tail is None:
             self.tail = item
-            item.prev = self.head
-            item.next = None
-            self.head.next = self.tail
-            if (self.__ascending and self.compare(self.head.value, value) == 1) \
-                    or (not self.__ascending and self.compare(value, self.head.value) == 1):
-                self.tail.value = self.head.value
-                self.head.value = value
             return
+
         node = self.head
 
         while node is not None:
