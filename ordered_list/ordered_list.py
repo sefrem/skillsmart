@@ -31,14 +31,14 @@ class OrderedList:
 
         while node is not None:
             if self.__ascending:
-                if self.compare(value, self.tail.value) == 1:
+                if self.compare(value, self.tail.value) == 1 or self.compare(value, self.tail.value) == 0:
                     item.prev = self.tail
                     item.next = None
                     self.tail.next = item
                     self.tail = item
                     break
 
-                if self.compare(node.value, value) == 1:
+                if self.compare(node.value, value) == 1 or self.compare(node.value, value) == 0:
                     item.prev = node.prev
                     item.next = node
                     if node.prev is None:
@@ -48,14 +48,14 @@ class OrderedList:
                     node.prev = item
                     break
             else:
-                if self.compare(value, self.head.value) == 1:
+                if self.compare(value, self.head.value) == 1 or self.compare(value, self.head.value) == 0:
                     item.next = self.head
                     item.prev = None
                     self.head.prev = item
                     self.head = item
                     break
 
-                if self.compare(node.value, value) == 1:
+                if self.compare(node.value, value) == 1 or self.compare(node.value, value) == 0:
                     item.prev = node
                     item.next = node.next
                     if node.next is None:

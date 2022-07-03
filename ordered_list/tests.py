@@ -87,6 +87,16 @@ class TestOrderedList(unittest.TestCase):
         self.assertEqual(1, ordered_list.head.value)
         self.assertEqual(4, ordered_list.tail.value)
 
+    def test_adding_same_values_as_tail(self):
+        ordered_list = OrderedList(True)
+        ordered_list.add(1)
+        ordered_list.add(2)
+        ordered_list.add(2)
+
+        self.assertEqual([(None, 1), (1, 2), (2, 2), (2, None)], get_list_values(ordered_list))
+        self.assertEqual(1, ordered_list.head.value)
+        self.assertEqual(2, ordered_list.tail.value)
+
     def test_adding_few_values_desc_order(self):
         ordered_list = OrderedList(False)
         ordered_list.add(2)
@@ -158,11 +168,16 @@ class TestOrderedList(unittest.TestCase):
         self.assertEqual([], get_list_values(ordered_list))
 
     def test_get_length(self):
-        ordered_list = OrderedList(False)
+        ordered_list = OrderedList(True)
         ordered_list.add(1)
         ordered_list.add(4)
+        ordered_list.delete(4)
+        ordered_list.add(5)
+        ordered_list.add(5)
+        ordered_list.add(6)
+        ordered_list.add(8)
 
-        self.assertEqual(2, ordered_list.len())
+        self.assertEqual(5, ordered_list.len())
 
 
 class TestOrderedListString(unittest.TestCase):
