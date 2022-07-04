@@ -92,12 +92,15 @@ class TestHashTable(unittest.TestCase):
         slot_1 = hash_table.put('value')
         slot_2 = hash_table.put('lavue')
 
-        slot = hash_table.find('value')
+        value_1_slot = hash_table.find('value')
+        value_2_slot = hash_table.find('lavue')
 
         self.assertEqual(14, slot_1)
         self.assertEqual(0, slot_2)
-        self.assertEqual(14, slot)
-        self.assertEqual(slot_1, slot)
+        self.assertEqual(14, value_1_slot)
+        self.assertEqual(0, value_2_slot)
+        self.assertEqual(slot_1, value_1_slot)
+        self.assertEqual(slot_2, value_2_slot)
         self.assertEqual('value', hash_table.slots[slot_1])
         self.assertEqual('lavue', hash_table.slots[slot_2])
 
