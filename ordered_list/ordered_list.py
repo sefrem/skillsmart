@@ -30,40 +30,28 @@ class OrderedList:
         node = self.head
 
         while node is not None:
-            if self.__ascending:
-                if self.compare(value, self.tail.value) == 1 or self.compare(value, self.tail.value) == 0:
-                    item.prev = self.tail
-                    item.next = None
-                    self.tail.next = item
-                    self.tail = item
-                    break
-
-                if self.compare(node.value, value) == 1 or self.compare(node.value, value) == 0:
-                    item.prev = node.prev
-                    item.next = node
-                    if node.prev is None:
-                        self.head = item
-                    else:
-                        node.prev.next = item
-                    node.prev = item
-                    break
-            else:
-                if self.compare(value, self.head.value) == 1 or self.compare(value, self.head.value) == 0:
-                    item.next = self.head
-                    item.prev = None
-                    self.head.prev = item
-                    self.head = item
-                    break
-
-                if self.compare(node.value, value) == 1 or self.compare(node.value, value) == 0:
-                    item.prev = node
-                    item.next = node.next
-                    if node.next is None:
-                        self.tail = item
-                    else:
-                        node.next.prev = item
-                    node.next = item
-                    break
+            if (self.__ascending and self.compare(value, self.tail.value) in (1, 0)) \
+                    or (not self.__ascending and self.compare(value, self.tail.value) in (-1, 0)):
+                item.prev = self.tail
+                item.next = None
+                self.tail.next = item
+                self.tail = item
+                break
+            if (self.__ascending and self.compare(value, self.head.value) in (-1, 0)) \
+                    or (not self.__ascending and self.compare(value, self.head.value) in (1, 0)):
+                item.next = self.head
+                item.prev = None
+                self.head.prev = item
+                self.head = item
+                break
+            if (self.__ascending and self.compare(value, node.value) in (-1, 0)) \
+                    or (not self.__ascending and self.compare(value, node.value) in (1, 0)):
+                item.prev = node.prev
+                item.next = node
+                if node.prev is not None:
+                    node.prev.next = item
+                node.prev = item
+                break
 
             node = node.next
 
@@ -83,6 +71,9 @@ class OrderedList:
     def delete(self, val):
         node = self.head
         while node is not None:
+            if (self.__ascending and node.value > val) \
+                    or (not self.__ascending and node.value < val):
+                return None
             if node.value == val:
                 if node.prev is None and node.next is None:
                     self.head = None
@@ -101,6 +92,7 @@ class OrderedList:
 
                 node.prev.next = node.next
                 node.next.prev = node.prev
+                return
 
             node = node.next
 

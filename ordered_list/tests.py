@@ -68,11 +68,12 @@ class TestOrderedList(unittest.TestCase):
 
     def test_adding_item_desc_order(self):
         ordered_list = OrderedList(False)
-        ordered_list.add(1)
-        ordered_list.add(4)
         ordered_list.add(2)
+        ordered_list.add(4)
+        ordered_list.add(4)
+        ordered_list.add(1)
 
-        self.assertEqual([(None, 4), (4, 2), (2, 1), (1, None)], get_list_values(ordered_list))
+        self.assertEqual([(None, 4), (4, 4), (4, 2), (2, 1), (1, None)], get_list_values(ordered_list))
         self.assertEqual(4, ordered_list.head.value)
         self.assertEqual(1, ordered_list.tail.value)
 
@@ -127,17 +128,43 @@ class TestOrderedList(unittest.TestCase):
 
         self.assertEqual(None, ordered_list.find(24))
 
-    def test_deleting_element(self):
+    def test_deleting_element_asc_list(self):
+        ordered_list = OrderedList(True)
+        ordered_list.add(3)
+        ordered_list.add(4)
+        ordered_list.add(2)
+
+        ordered_list.delete(4)
+        ordered_list.add(1)
+        ordered_list.add(1)
+        ordered_list.delete(1)
+
+        self.assertEqual([(None, 1), (1, 2), (2, 3), (3, None)], get_list_values(ordered_list))
+        self.assertEqual(1, ordered_list.head.value)
+        self.assertEqual(3, ordered_list.tail.value)
+        self.assertEqual(3, ordered_list.len())
+
+    def test_deleting_element_desc_list(self):
+        ordered_list = OrderedList(False)
+        ordered_list.add(1)
+        ordered_list.add(4)
+        ordered_list.add(4)
+        ordered_list.add(2)
+
+        ordered_list.delete(4)
+
+        self.assertEqual([(None, 4), (4, 2), (2, 1), (1, None)], get_list_values(ordered_list))
+        self.assertEqual(4, ordered_list.head.value)
+        self.assertEqual(1, ordered_list.tail.value)
+
+    def test_deleting_last_element(self):
         ordered_list = OrderedList(True)
         ordered_list.add(1)
         ordered_list.add(4)
         ordered_list.add(2)
 
         ordered_list.delete(4)
-
         self.assertEqual([(None, 1), (1, 2), (2, None)], get_list_values(ordered_list))
-        self.assertEqual(1, ordered_list.head.value)
-        self.assertEqual(2, ordered_list.tail.value)
 
     def test_deleting_element_from_empty_list(self):
         ordered_list = OrderedList(True)
