@@ -26,11 +26,10 @@ class HashTable:
                 if self.step >= self.size:
                     return None
 
-                if not self.slots[next_slot]:
-                    return next_slot
-
                 if self.slots[next_slot]:
                     next_slot += self.step
+                else:
+                    return next_slot
 
     def put(self, value):
         slot = self.seek_slot(value)
