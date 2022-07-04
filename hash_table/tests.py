@@ -89,11 +89,17 @@ class TestHashTable(unittest.TestCase):
     def test_find_success(self):
         hash_table = HashTable(17, 2)
 
-        hash_table.slots[8] = 'value'
+        slot_1 = hash_table.put('value')
+        slot_2 = hash_table.put('lavue')
 
         slot = hash_table.find('value')
 
-        self.assertEqual(8, slot)
+        self.assertEqual(14, slot_1)
+        self.assertEqual(0, slot_2)
+        self.assertEqual(14, slot)
+        self.assertEqual(slot_1, slot)
+        self.assertEqual('value', hash_table.slots[slot_1])
+        self.assertEqual('lavue', hash_table.slots[slot_2])
 
     def test_find_fail(self):
         hash_table = HashTable(17, 2)

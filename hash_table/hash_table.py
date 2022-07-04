@@ -33,7 +33,7 @@ class HashTable:
 
     def put(self, value):
         slot = self.seek_slot(value)
-        if slot:
+        if slot is not None:
             self.slots[slot] = value
 
         return slot
