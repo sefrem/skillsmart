@@ -76,6 +76,19 @@ class TestHashTable(unittest.TestCase):
         self.assertEqual('random', hash_table.slots[2])
         self.assertEqual(2, slot)
 
+    def test_put_few_same_values(self):
+        hash_table = HashTable(17, 2)
+
+        hash_table.put('some')
+        hash_table.put('some')
+        hash_table.put('some')
+        hash_table.put('some')
+
+        self.assertEqual('some', hash_table.slots[3])
+        self.assertEqual('some', hash_table.slots[5])
+        self.assertEqual('some', hash_table.slots[7])
+        self.assertEqual('some', hash_table.slots[9])
+
     def test_put_failed(self):
         hash_table = HashTable(3, 2)
 
