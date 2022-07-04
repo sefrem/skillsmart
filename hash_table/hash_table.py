@@ -40,7 +40,6 @@ class HashTable:
         return slot
 
     def find(self, value):
-
         for i, val in enumerate(self.slots):
             if val == value:
                 return i
