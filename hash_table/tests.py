@@ -47,36 +47,23 @@ class TestHashTable(unittest.TestCase):
         hash_table.put('sacascass')
         hash_table.put('ldlkdld')
         hash_table.put(',kdld')
+        slot = hash_table.put('фывааы')
 
         for i in hash_table.slots:
             self.assertIsNotNone(i)
+        self.assertIsNone(slot)
 
-    @unittest.mock.patch(
-        "hash_table.HashTable.hash_fun",
-        Mock(return_value=16),
-    )
-    def test_step_increase_when_go_over_table_size(self):
-        hash_table = HashTable(17, 2)
-        hash_table.slots[16] = 'test_value'
-
-        slot = hash_table.seek_slot('random')
-
-        self.assertEqual(3, hash_table.step)
-        self.assertEqual(0, slot)
-
-    @unittest.mock.patch(
-        "hash_table.HashTable.hash_fun",
-        Mock(return_value=16),
-    )
-    def test_collision_with_step_increase(self):
-        hash_table = HashTable(17, 2)
-        hash_table.slots[16] = 'test_value'
+    def test_step_increase_when_go_over_prev_slot(self):
+        hash_table = HashTable(5, 2)
+        hash_table.slots[3] = 'test_value'
         hash_table.slots[0] = 'test_value'
+        hash_table.slots[2] = 'test_value'
+        hash_table.slots[1] = 'test_value'
 
         slot = hash_table.seek_slot('random')
 
-        self.assertEqual(3, hash_table.step)
-        self.assertEqual(3, slot)
+        self.assertEqual(4, hash_table.step)
+        self.assertEqual(4, slot)
 
     @unittest.mock.patch(
         "hash_table.HashTable.hash_fun",

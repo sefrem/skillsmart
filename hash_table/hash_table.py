@@ -16,12 +16,20 @@ class HashTable:
         if self.slots[slot] is None:
             return slot
         else:
+            is_round = False
             next_slot = slot + self.step
 
             while True:
-                if next_slot >= len(self.slots):
-                    next_slot = 0
+                if is_round and next_slot >= slot:
                     self.step += 1
+                    next_slot = 0
+                    is_round = False
+                    continue
+
+                if next_slot >= len(self.slots):
+                    is_round = True
+                    next_slot = 0
+                    continue
 
                 if self.step >= self.size:
                     return None
