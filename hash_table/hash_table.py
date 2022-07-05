@@ -13,13 +13,13 @@ class HashTable:
 
     def seek_slot(self, value):
         slot = self.hash_fun(value)
-        if not self.slots[slot]:
+        if self.slots[slot] is None:
             return slot
         else:
             next_slot = slot + self.step
 
             while True:
-                if next_slot > self.size:
+                if next_slot >= len(self.slots):
                     next_slot = 0
                     self.step += 1
 

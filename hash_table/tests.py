@@ -37,6 +37,20 @@ class TestHashTable(unittest.TestCase):
 
         self.assertEqual(10, slot)
 
+    def test_fill_table_to_full_size(self):
+        hash_table = HashTable(7, 2)
+
+        hash_table.put(',kdld')
+        hash_table.put(';asldkv')
+        hash_table.put('csdav')
+        hash_table.put('asvsdavsvcdscds')
+        hash_table.put('sacascass')
+        hash_table.put('ldlkdld')
+        hash_table.put(',kdld')
+
+        for i in hash_table.slots:
+            self.assertIsNotNone(i)
+
     @unittest.mock.patch(
         "hash_table.HashTable.hash_fun",
         Mock(return_value=16),
@@ -125,4 +139,3 @@ class TestHashTable(unittest.TestCase):
         slot = hash_table.find('some_random val')
 
         self.assertEqual(None, slot)
-
