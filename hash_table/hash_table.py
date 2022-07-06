@@ -28,7 +28,7 @@ class HashTable:
 
                 if next_slot >= len(self.slots):
                     is_round = True
-                    next_slot = 0
+                    next_slot -= len(self.slots)
                     continue
 
                 if self.step >= self.size:

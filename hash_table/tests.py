@@ -53,6 +53,30 @@ class TestHashTable(unittest.TestCase):
             self.assertIsNotNone(i)
         self.assertIsNone(slot)
 
+    def test_fill_bigger_table_to_full_size(self):
+        hash_table = HashTable(15, 4)
+
+        hash_table.put(',kdld')
+        hash_table.put(';asldkvasldkv')
+        hash_table.put(';asldkvasldkvlkboplfdkp')
+        hash_table.put('9ksapdf')
+        hash_table.put('csdav')
+        hash_table.put('asvsdavsvcdscds')
+        hash_table.put('sacascass')
+        hash_table.put('wfwasfsafaf')
+        hash_table.put(';lakmklm')
+        hash_table.put('ldlkdld')
+        hash_table.put('werwer')
+        hash_table.put('qwreqwr')
+        hash_table.put('qwewr')
+        hash_table.put(',kdld')
+        hash_table.put(',kdld')
+        slot = hash_table.put('фывааы')
+
+        for i in hash_table.slots:
+            self.assertIsNotNone(i)
+        self.assertIsNone(slot)
+
     def test_step_increase_when_go_over_prev_slot(self):
         hash_table = HashTable(5, 2)
         hash_table.slots[3] = 'test_value'
