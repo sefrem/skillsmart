@@ -161,3 +161,135 @@ class TestPowerSet(unittest.TestCase):
         intersection_set = set_1.intersection(set_2)
 
         self.assertDictEqual(expected_set.set, intersection_set.set)
+
+    def test_difference(self):
+        set_1 = PowerSet()
+        set_2 = PowerSet()
+        expected_set = PowerSet()
+
+        for i in range(0, 100):
+            set_1.put(str(i))
+        for j in range(50, 80):
+            set_2.put(str(j))
+        for k in range(0, 50):
+            expected_set.put(str(k))
+        for i in range(80, 100):
+            expected_set.put(str(i))
+
+        difference_set = set_1.difference(set_2)
+
+        self.assertDictEqual(expected_set.set, difference_set.set)
+
+    def test_difference_big_set(self):
+        set_1 = PowerSet()
+        set_2 = PowerSet()
+        expected_set = PowerSet()
+
+        for i in range(0, 10000):
+            set_1.put(str(i))
+        for j in range(5000, 8000):
+            set_2.put(str(j))
+        for k in range(0, 5000):
+            expected_set.put(str(k))
+        for i in range(8000, 10000):
+            expected_set.put(str(i))
+
+        difference_set = set_1.difference(set_2)
+
+        self.assertDictEqual(expected_set.set, difference_set.set)
+
+    def test_difference_returns_empty_set(self):
+        set_1 = PowerSet()
+        set_2 = PowerSet()
+        expected_set = PowerSet()
+
+        for i in range(0, 10000):
+            set_1.put(str(i))
+        for j in range(0, 10000):
+            set_2.put(str(j))
+
+        difference_set = set_1.difference(set_2)
+
+        self.assertDictEqual(expected_set.set, difference_set.set)
+
+    def test_is_subset(self):
+        set_1 = PowerSet()
+        set_2 = PowerSet()
+
+        for i in range(0, 100):
+            set_1.put(str(i))
+        for j in range(20, 50):
+            set_2.put(str(j))
+
+        is_subset = set_1.issubset(set_2)
+
+        self.assertTrue(is_subset)
+
+    def test_is_not_subset(self):
+        set_1 = PowerSet()
+        set_2 = PowerSet()
+
+        for i in range(0, 100):
+            set_1.put(str(i))
+        for j in range(90, 101):
+            set_2.put(str(j))
+
+        is_subset = set_1.issubset(set_2)
+
+        self.assertFalse(is_subset)
+
+    def test_is_subset_all_values_of_set_in_subset(self):
+        set_1 = PowerSet()
+        set_2 = PowerSet()
+
+        for i in range(40, 50):
+            set_1.put(str(i))
+        for j in range(0, 100):
+            set_2.put(str(j))
+
+        is_subset_set_2 = set_1.issubset(set_2)
+        is_subset_set_1 = set_2.issubset(set_1)
+
+        self.assertFalse(is_subset_set_2)
+        self.assertTrue(is_subset_set_1)
+
+    def test_get_value(self):
+        set = PowerSet()
+
+        for i in range(40, 50):
+            set.put(str(i))
+
+        is_present = set.get('48')
+
+        self.assertTrue(is_present)
+
+    def test_get_value_not_in_set(self):
+        set = PowerSet()
+
+        for i in range(40, 50):
+            set.put(str(i))
+
+        is_present = set.get('296')
+
+        self.assertFalse(is_present)
+
+    def test_get_value_empty_set(self):
+        set = PowerSet()
+
+        is_present = set.get('296')
+
+        self.assertFalse(is_present)
+
+    def test_get_set_size(self):
+        set = PowerSet()
+
+        for i in range(0, 10000):
+            set.put(str(i))
+
+        size = set.size()
+
+        self.assertEqual(10000, size)
+
+    def test_get_size_of_empty_set(self):
+
+        self.assertEqual(0, PowerSet().size())
