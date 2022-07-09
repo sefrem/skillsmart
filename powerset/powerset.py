@@ -33,11 +33,16 @@ class PowerSet:
 
     def get(self, value):
         slot = hash_fun(value)
+        keys = list(self.set.keys())
+        if len(keys):
+            last_key = keys[-1]
+        else:
+            return False
 
         while True:
             if self.set.get(slot) == value:
                 return True
-            if self.set.get(slot) is None:
+            if slot > last_key:
                 return False
             if self.set.get(slot) != value:
                 slot += self.step

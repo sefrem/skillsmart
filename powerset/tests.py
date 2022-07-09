@@ -102,6 +102,28 @@ class TestPowerSet(unittest.TestCase):
         for i in power_set.set.values():
             self.assertNotEqual('55', i)
 
+    def test_remove_value_with_collisions(self):
+        power_set = PowerSet()
+
+        for i in range(0, 100):
+            power_set.put(str(i))
+
+        power_set.put('300')
+        power_set.put('400')
+        power_set.put('500')
+        power_set.put('600')
+
+        is_removed = power_set.remove('500')
+
+        self.assertTrue(is_removed)
+        for i in power_set.set.values():
+            self.assertNotEqual('500', i)
+
+        self.assertTrue(power_set.get('300'))
+        self.assertTrue(power_set.get('400'))
+        self.assertTrue(power_set.get('600'))
+        self.assertFalse(power_set.get('500'))
+
     def test_remove_non_existent_value(self):
         power_set = PowerSet()
 
@@ -115,6 +137,9 @@ class TestPowerSet(unittest.TestCase):
         is_removed = power_set.remove('600')
 
         self.assertFalse(is_removed)
+
+    def test_remove_value_from_empty_set(self):
+        self.assertFalse(PowerSet().remove('24'))
 
     def test_intersection(self):
         set_1 = PowerSet()
