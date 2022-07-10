@@ -113,16 +113,16 @@ class TestPowerSet(unittest.TestCase):
         power_set.put('500')
         power_set.put('600')
 
-        is_removed = power_set.remove('500')
+        is_removed = power_set.remove('300')
 
         self.assertTrue(is_removed)
         for i in power_set.set.values():
-            self.assertNotEqual('500', i)
+            self.assertNotEqual('300', i)
 
-        self.assertTrue(power_set.get('300'))
+        self.assertFalse(power_set.get('300'))
         self.assertTrue(power_set.get('400'))
         self.assertTrue(power_set.get('600'))
-        self.assertFalse(power_set.get('500'))
+        self.assertTrue(power_set.get('500'))
 
     def test_remove_non_existent_value(self):
         power_set = PowerSet()

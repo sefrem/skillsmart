@@ -39,26 +39,25 @@ class PowerSet:
         else:
             return False
 
-        while True:
-            if slot > last_key:
-                return False
-            value_in_slot = self.set.get(slot)
-            if value_in_slot == value:
+        while slot <= last_key:
+            if self.set.get(slot) == value:
                 return True
-            if value_in_slot != value:
+            else:
                 slot += self.step
+
+        return False
 
     def remove(self, value):
         slot = hash_fun(value)
 
-        while True:
+        while self.set.get(slot) is not None:
             if self.set.get(slot) == value:
                 self.set.pop(slot)
                 return True
-            if self.set.get(slot) is None:
-                return False
-            if self.set.get(slot) != value:
+            else:
                 slot += self.step
+
+        return False
 
     def intersection(self, set2):
         intersected_set = PowerSet()
@@ -66,13 +65,11 @@ class PowerSet:
         for value in self.set.values():
             slot = hash_fun(value)
 
-            while True:
-                if set2.set.get(slot) is None:
-                    break
+            while set2.set.get(slot) is not None:
                 if set2.set.get(slot) == value:
                     intersected_set.put(value)
                     break
-                if set2.set.get(slot) != value:
+                else:
                     slot += set2.step
 
         return intersected_set
@@ -98,7 +95,7 @@ class PowerSet:
                     break
                 if set2.set.get(slot) == value:
                     break
-                if set2.set.get(slot) != value:
+                else:
                     slot += set2.step
 
         return difference_set
@@ -113,7 +110,7 @@ class PowerSet:
                     return False
                 if set2.set.get(slot) == value:
                     break
-                if set2.set.get(slot) != value:
+                else:
                     slot += set2.step
 
         return True
