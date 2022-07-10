@@ -23,8 +23,8 @@ class PowerSet:
             return
 
         while True:
-            set_value = self.set.get(slot)
-            if set_value is not None and set_value != value:
+            value_in_slot = self.set.get(slot)
+            if value_in_slot is not None and value_in_slot != value:
                 slot += self.step
                 continue
 
@@ -34,17 +34,18 @@ class PowerSet:
     def get(self, value):
         slot = hash_fun(value)
         keys = list(self.set.keys())
-        if len(keys):
+        if len(keys) > 0:
             last_key = keys[-1]
         else:
             return False
 
         while True:
-            if self.set.get(slot) == value:
-                return True
             if slot > last_key:
                 return False
-            if self.set.get(slot) != value:
+            value_in_slot = self.set.get(slot)
+            if value_in_slot == value:
+                return True
+            if value_in_slot != value:
                 slot += self.step
 
     def remove(self, value):
