@@ -294,11 +294,10 @@ class TestPowerSet(unittest.TestCase):
         for i in range(0, 50000):
             set.put(str(i))
 
-        is_present = set.get('17968')
-        is_present_2 = set.get('50001')
+        for i in range(0, 50000):
+            self.assertTrue(set.get(str(i)))
 
-        self.assertTrue(is_present)
-        self.assertFalse(is_present_2)
+        self.assertFalse(set.get('50001'))
 
     def test_get_value_not_in_set(self):
         set = PowerSet()

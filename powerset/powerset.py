@@ -12,6 +12,7 @@ class PowerSet:
     def __init__(self):
         self.set = dict()
         self.step = 50
+        self.max_slot = 0
 
     def size(self):
         return len(self.set.keys())
@@ -29,17 +30,13 @@ class PowerSet:
                 continue
 
             self.set[slot] = value
+            self.max_slot = slot if slot > self.max_slot else self.max_slot
             break
 
     def get(self, value):
         slot = hash_fun(value)
-        keys = list(self.set.keys())
-        if len(keys) > 0:
-            last_key = keys[-1]
-        else:
-            return False
 
-        while slot <= last_key:
+        while slot <= self.max_slot:
             if self.set.get(slot) == value:
                 return True
             else:
