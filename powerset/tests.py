@@ -288,7 +288,7 @@ class TestPowerSet(unittest.TestCase):
 
         self.assertTrue(is_present)
 
-    def test_get_value_big_set(self):
+    def test_get_all_values_big_set(self):
         set = PowerSet()
 
         for i in range(0, 50000):
