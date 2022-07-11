@@ -113,14 +113,13 @@ class TestPowerSet(unittest.TestCase):
         power_set.put('500')
         power_set.put('600')
 
-        is_removed = power_set.remove('300')
-
-        self.assertTrue(is_removed)
+        self.assertTrue(power_set.remove('300'))
+        self.assertTrue(power_set.remove('400'))
         for i in power_set.set.values():
             self.assertNotEqual('300', i)
 
         self.assertFalse(power_set.get('300'))
-        self.assertTrue(power_set.get('400'))
+        self.assertFalse(power_set.get('400'))
         self.assertTrue(power_set.get('600'))
         self.assertTrue(power_set.get('500'))
 

@@ -47,7 +47,7 @@ class PowerSet:
     def remove(self, value):
         slot = hash_fun(value)
 
-        while self.set.get(slot) is not None:
+        while slot <= self.max_slot:
             if self.set.get(slot) == value:
                 self.set.pop(slot)
                 return True
