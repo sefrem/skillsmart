@@ -1,4 +1,4 @@
-from stack.stack_tail import Stack
+from data_structures_pt_1.stack.stack_tail import Stack
 
 
 def turn_queue(queue, n):
