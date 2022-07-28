@@ -1,7 +1,7 @@
 
 3.1
     
-1. FlagsCalculator(arguments) - FlagsCalculator.calculate(arguments)
+1. FlagsCalculator(arguments) - FlagsCalculator.calculate(arguments)  
     // метод, вычисляющий список флагов для документа
 
 
