@@ -37,11 +37,11 @@
    // ограничил область видимости поля класса
 
 
-10. counterparties - private counterparties 
+10. counterparties - private counterparties   
     // ограничил область видимости поля класса
   
  
-11. currentCert - private currentCert
+11. currentCert - private currentCert  
    // ограничил область видимости поля класса
 
 
