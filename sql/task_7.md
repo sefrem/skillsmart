@@ -1,7 +1,7 @@
 
 8.3.1 SELECT Products.ProductName, Categories.CategoryName  
         FROM Products, Categories  
-        WHERE Products.CategoryID = Categories.CategoryID
+        WHERE Products.CategoryID = Categories.CategoryID  
 8.3.2 SELECT Products.ProductName, Products.UnitPrice   
         FROM Products, [Order Details]   
         WHERE [Order Details].ProductID = Products.ProductID   
