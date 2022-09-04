@@ -5,10 +5,11 @@ FROM Customers t1, Customers t2
 WHERE t1.CustomerID <> t2.CustomerID  
 AND (t1.Region IS NULL) AND (t2.Region IS NULL)  
 9.4.2  
-SELECT Orders.OrderID, Customers.Region  
-FROM Orders, Customers  
-WHERE Customers.Region = ANY (  
-SELECT Region FROM Customers)  
+SELECT OrderId  
+FROM Orders  
+WHERE Orders.CustomerID = ANY (  
+SELECT CustomerId FROM Customers  
+WHERE Region IS NOT NULL)   
 9.4.3  
 SELECT * FROM Orders  
 WHERE Orders.Freight > ALL (  
