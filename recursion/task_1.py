@@ -1,3 +1,6 @@
+import os
+
+
 # 1. возведение числа N в степень M.
 
 def pow(n, m):
@@ -34,25 +37,74 @@ def is_palyndrome(str):
 
 # 5. печать только чётных значений из списка;
 
-def print_even(list):
-    if len(list) == 0:
+def print_even(list, index=0):
+    if index == len(list):
         return
 
-    value = list[0]
+    value = list[index]
     if value % 2 == 0:
         print(value)
 
-    return print_even(list[1:])
+    print_even(list, index + 1)
 
 
 # 6. печать элементов списка с чётными индексами;
 
-def print_even_index(list):
-    if len(list) == 0:
+def print_even_index(list, index=0):
+    if index == len(list):
         return
 
-    print(list[0])
+    print(list[index])
 
-    return print_even_index(list[2:])
+    print_even_index(list, index + 2)
+
+
+# 7. нахождение второго максимального числа в списке
+# (с учётом, что максимальных может быть несколько, если они равны);
+
+def find_max(list):
+    index = 0
+    max = 0
+    prev_max = 0
+
+    def search_list(index):
+        nonlocal max, prev_max
+        if index == len(list):
+            return
+        if list[index] > max:
+            prev_max = max
+            max = list[index]
+
+        search_list(index + 1)
+
+    search_list(index)
+
+    return prev_max
+
+
+# 8. поиск всех файлов в заданном каталоге, включая файлы, расположенные в подкаталогах произвольной вложенности.
+
+def print_file_names(files, index=0):
+    if index == len(files):
+        return
+    print(files[index])
+
+    print_file_names(files, index + 1)
+
+
+def iterate_folders(folders, callback, dirpath, index=0, ):
+    if index == len(folders):
+        return
+    callback(dirpath + '/' + folders[index])
+
+    iterate_folders(folders, callback, dirpath, index + 1)
+
+
+def find_files(path):
+    (dirpath, folders, files) = next(os.walk(path))
+    print_file_names(files)
+
+    iterate_folders(folders, find_files, dirpath)
+
 
 
