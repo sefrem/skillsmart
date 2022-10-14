@@ -62,24 +62,17 @@ def print_even_index(list, index=0):
 # 7. нахождение второго максимального числа в списке
 # (с учётом, что максимальных может быть несколько, если они равны);
 
-def find_max(list):
-    index = 0
-    max = 0
-    prev_max = 0
+def find_max(list, index=0, max=0, prev_max=0):
+    if index == len(list):
+        return prev_max
 
-    def search_list(index):
-        nonlocal max, prev_max
-        if index == len(list):
-            return
-        if list[index] > max:
-            prev_max = max
-            max = list[index]
+    if list[index] > max:
+        return find_max(list, index + 1, list[index], max)
 
-        search_list(index + 1)
+    if list[index] > prev_max and list[index] != max:
+        return find_max(list, index + 1, max, list[index])
 
-    search_list(index)
-
-    return prev_max
+    return find_max(list, index + 1, max, prev_max)
 
 
 # 8. поиск всех файлов в заданном каталоге, включая файлы, расположенные в подкаталогах произвольной вложенности.
@@ -105,6 +98,3 @@ def find_files(path):
     print_file_names(files)
 
     iterate_folders(folders, find_files, dirpath)
-
-
-
