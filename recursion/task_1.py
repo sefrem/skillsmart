@@ -62,7 +62,14 @@ def print_even_index(list, index=0):
 # 7. нахождение второго максимального числа в списке
 # (с учётом, что максимальных может быть несколько, если они равны);
 
-def find_max(list, index=0, max=0, prev_max=0):
+def find_max(list, index=None, max=None, prev_max=None):
+    if index is None:
+        index = 0
+    if max is None:
+        max = 0
+    if prev_max is None:
+        prev_max = 0
+
     if index == len(list):
         return prev_max
 
@@ -85,7 +92,7 @@ def print_file_names(files, index=0):
     print_file_names(files, index + 1)
 
 
-def iterate_folders(folders, callback, dirpath, index=0, ):
+def iterate_folders(folders, callback, dirpath, index=0):
     if index == len(folders):
         return
     callback(dirpath + '/' + folders[index])
@@ -98,3 +105,33 @@ def find_files(path):
     print_file_names(files)
 
     iterate_folders(folders, find_files, dirpath)
+
+
+# Генерация всех корректных сбалансированных комбинаций круглых
+# скобок (параметр -- количество открывающих скобок).
+
+def generate_braces(n):
+    total = []
+
+    def generate(open_braces=None, close_braces=None, braces=None):
+        if open_braces is None:
+            open_braces = 0
+        if close_braces is None:
+            close_braces = 0
+        if braces is None:
+            braces = ''
+
+        if open_braces == n and close_braces == n:
+            total.append(braces)
+            return
+
+        if open_braces < n:
+            generate(open_braces + 1, close_braces, braces + '(')
+
+        if close_braces < open_braces:
+            generate(open_braces, close_braces + 1, braces + ')')
+
+    generate()
+
+    return total
+
