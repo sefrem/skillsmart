@@ -37,7 +37,10 @@ def is_palyndrome(str):
 
 # 5. печать только чётных значений из списка;
 
-def print_even(list, index=0):
+def print_even(list, index=None):
+    if index is None:
+        index = 0
+
     if index == len(list):
         return
 
@@ -50,7 +53,10 @@ def print_even(list, index=0):
 
 # 6. печать элементов списка с чётными индексами;
 
-def print_even_index(list, index=0):
+def print_even_index(list, index=None):
+    if index is None:
+        index = 0
+
     if index == len(list):
         return
 
@@ -84,7 +90,10 @@ def find_max(list, index=None, max=None, prev_max=None):
 
 # 8. поиск всех файлов в заданном каталоге, включая файлы, расположенные в подкаталогах произвольной вложенности.
 
-def print_file_names(files, index=0):
+def print_file_names(files, index=None):
+    if index is None:
+        index = 0
+
     if index == len(files):
         return
     print(files[index])
@@ -92,7 +101,10 @@ def print_file_names(files, index=0):
     print_file_names(files, index + 1)
 
 
-def iterate_folders(folders, callback, dirpath, index=0):
+def iterate_folders(folders, callback, dirpath, index=None):
+    if index is None:
+        index = 0
+
     if index == len(folders):
         return
     callback(dirpath + '/' + folders[index])
