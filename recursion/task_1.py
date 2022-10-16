@@ -37,63 +37,57 @@ def is_palyndrome(str):
 
 # 5. печать только чётных значений из списка;
 
-def print_even(list, index=None):
-    if index is None:
-        index = 0
+def print_even(list):
+    def iterate(index):
+        if index >= len(list):
+            return
 
-    if index == len(list):
-        return
+        value = list[index]
+        if value % 2 == 0:
+            print(value)
 
-    value = list[index]
-    if value % 2 == 0:
-        print(value)
+        iterate(index + 1)
 
-    print_even(list, index + 1)
+    iterate(0)
 
 
 # 6. печать элементов списка с чётными индексами;
 
-def print_even_index(list, index=None):
-    if index is None:
-        index = 0
+def print_even_index(list):
+    def iterate(index):
+        if index >= len(list):
+            return
 
-    if index == len(list):
-        return
+        print(list[index])
 
-    print(list[index])
+        iterate(index + 2)
 
-    print_even_index(list, index + 2)
+    iterate(0)
 
 
 # 7. нахождение второго максимального числа в списке
 # (с учётом, что максимальных может быть несколько, если они равны);
 
-def find_max(list, index=None, max=None, prev_max=None):
-    if index is None:
-        index = 0
-    if max is None:
-        max = 0
-    if prev_max is None:
-        prev_max = 0
+def find_max(list):
+    def find(index, max, prev_max):
 
-    if index == len(list):
-        return prev_max
+        if index == len(list):
+            return prev_max
 
-    if list[index] > max:
-        return find_max(list, index + 1, list[index], max)
+        if list[index] > max:
+            return find(index + 1, list[index], max)
 
-    if list[index] > prev_max and list[index] != max:
-        return find_max(list, index + 1, max, list[index])
+        if list[index] > prev_max and list[index] != max:
+            return find(index + 1, max, list[index])
 
-    return find_max(list, index + 1, max, prev_max)
+        return find(index + 1, max, prev_max)
+
+    return find(0, 0, 0)
 
 
 # 8. поиск всех файлов в заданном каталоге, включая файлы, расположенные в подкаталогах произвольной вложенности.
 
-def print_file_names(files, index=None):
-    if index is None:
-        index = 0
-
+def print_file_names(files, index):
     if index == len(files):
         return
     print(files[index])
@@ -101,10 +95,7 @@ def print_file_names(files, index=None):
     print_file_names(files, index + 1)
 
 
-def iterate_folders(folders, callback, dirpath, index=None):
-    if index is None:
-        index = 0
-
+def iterate_folders(folders, callback, dirpath, index):
     if index == len(folders):
         return
     callback(dirpath + '/' + folders[index])
@@ -114,10 +105,9 @@ def iterate_folders(folders, callback, dirpath, index=None):
 
 def find_files(path):
     (dirpath, folders, files) = next(os.walk(path))
-    print_file_names(files)
+    print_file_names(files, 0)
 
-    iterate_folders(folders, find_files, dirpath)
-
+    iterate_folders(folders, find_files, dirpath, 0)
 
 # Генерация всех корректных сбалансированных комбинаций круглых
 # скобок (параметр -- количество открывающих скобок).
@@ -125,14 +115,7 @@ def find_files(path):
 def generate_braces(n):
     total = []
 
-    def generate(open_braces=None, close_braces=None, braces=None):
-        if open_braces is None:
-            open_braces = 0
-        if close_braces is None:
-            close_braces = 0
-        if braces is None:
-            braces = ''
-
+    def generate(open_braces, close_braces, braces):
         if open_braces == n and close_braces == n:
             total.append(braces)
             return
@@ -143,7 +126,6 @@ def generate_braces(n):
         if close_braces < open_braces:
             generate(open_braces, close_braces + 1, braces + ')')
 
-    generate()
+    generate(0, 0, '')
 
     return total
-
