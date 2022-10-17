@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 # 1. возведение числа N в степень M.
 
