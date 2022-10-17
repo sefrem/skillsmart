@@ -1,5 +1,5 @@
 import os
-
+from pathlib import Path
 
 # 1. возведение числа N в степень M.
 
@@ -77,8 +77,11 @@ def find_max(list):
         if list[index] > max:
             return find(index + 1, list[index], max)
 
-        if list[index] > prev_max and list[index] != max:
+        if list[index] > prev_max:
             return find(index + 1, max, list[index])
+
+        if list[index] == max:
+            return find(index + 1, max, max)
 
         return find(index + 1, max, prev_max)
 
@@ -87,27 +90,23 @@ def find_max(list):
 
 # 8. поиск всех файлов в заданном каталоге, включая файлы, расположенные в подкаталогах произвольной вложенности.
 
-def print_file_names(files, index):
-    if index == len(files):
-        return
-    print(files[index])
-
-    print_file_names(files, index + 1)
-
-
-def iterate_folders(folders, callback, dirpath, index):
-    if index == len(folders):
-        return
-    callback(dirpath + '/' + folders[index])
-
-    iterate_folders(folders, callback, dirpath, index + 1)
-
-
 def find_files(path):
-    (dirpath, folders, files) = next(os.walk(path))
-    print_file_names(files, 0)
 
-    iterate_folders(folders, find_files, dirpath, 0)
+    def iterate_folders(list, index):
+        if len(list) == index:
+            return
+
+        new_path = os.path.join(path, list[index])
+
+        if os.path.isdir(new_path):
+            find_files(new_path)
+
+        if os.path.isfile(new_path):
+            print(list[index])
+
+        iterate_folders(list, index+1)
+
+    iterate_folders(os.listdir(path), 0)
 
 
 # Генерация всех корректных сбалансированных комбинаций круглых
