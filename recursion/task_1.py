@@ -79,9 +79,6 @@ def find_second_max(list):
         if index == len(list):
             return prev_max
 
-        if prev_max > max:
-            prev_max, max = max, prev_max
-
         if list[index] > max:
             return find(index + 1, list[index], max)
 
@@ -90,7 +87,9 @@ def find_second_max(list):
 
         return find(index + 1, max, prev_max)
 
-    return find(2, list[0], list[1])
+    max, prev_max = (list[0], list[1]) if list[0] >= list[1] else (list[1], list[0])
+
+    return find(2, max, prev_max)
 
 
 # 8. поиск всех файлов в заданном каталоге, включая файлы, расположенные в подкаталогах произвольной вложенности.
