@@ -2,9 +2,9 @@ class SimpleTreeNode:
     Level = 0
 
     def __init__(self, val, parent):
-        self.NodeValue = val  # значение в узле
-        self.Parent = parent  # родитель или None для корня
-        self.Children = []  # список дочерних узлов
+        self.NodeValue = val
+        self.Parent = parent
+        self.Children = []
 
 
 class SimpleTree:
