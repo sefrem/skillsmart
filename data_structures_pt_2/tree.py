@@ -63,7 +63,7 @@ class SimpleTree:
         return len(self.GetAllNodes())
 
     def LeafCount(self):
-        leaf_nodes = 0
+        leaf_nodes = 1 if len(self.Root.Children) == 0 else 0
         index = 0
         nodes_to_visit = self.Root.Children.copy()
         while index < len(nodes_to_visit):
