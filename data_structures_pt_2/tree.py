@@ -56,7 +56,8 @@ class SimpleTree:
         new_parent = self.FindNodesByValue(NewParent.NodeValue)[0]
 
         new_parent.Children.append(original_node)
-        original_node.Parent.Children = []
+        original_node.Parent.Children = [item for item in original_node.Parent.Children if
+                                         item.NodeValue != original_node.NodeValue]
         original_node.Parent = new_parent
 
     def Count(self):
