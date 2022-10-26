@@ -103,24 +103,53 @@ class BST:
 
     def DeleteNodeByKey(self, key):
 
+        def getNodeToMove(node: BSTNode):
+            if node.LeftChild is None and node.RightChild is None:
+                return node
+            if node.LeftChild is None and node.RightChild:
+                node.Parent.LeftChild = node.RightChild
+                node.RightChild.Parent = node.Parent
+                return node
+
+            return getNodeToMove(node.LeftChild)
+
+        if self.Root.LeftChild is None and self.Root.RightChild is None:
+            self.Root = None
+            return True
+
+
+        # if self.Root.NodeKey == key:
+
+
+            # if self.Root.LeftChild and self.Root.RightChild:
+            #     node_to_move = getNodeToMove(self.Root.RightChild)
+            #     node_to_move.Parent = None
+            #     node_to_move.RightChild = self.Root.RightChild
+            #     node_to_move.LeftChild = self.Root.LeftChild
+            #     self.Root = node_to_move
+            #     return True
+            #
+            # if self.Root.LeftChild or self.Root.RightChild:
+            #     if self.Root.LeftChild:
+            #         self.Root.LeftChild.Parent = None
+            #         self.Root = self.Root.LeftChild
+            #     if self.Root.RightChild:
+            #         self.Root.RightChild.Parent = None
+            #         self.Root = self.Root.RightChild
+            #     return True
+
         def traverseTree(node: BSTNode):
             if node is None:
                 return False
 
             if node.NodeKey == key:
                 if node.LeftChild and node.RightChild:
-                    def getNodeToMove(node: BSTNode):
-                        if node.LeftChild is None and node.RightChild is None:
-                            return node
-                        if node.LeftChild is None and node.RightChild:
-                            node.Parent.LeftChild = node.RightChild
-                            node.RightChild.Parent = node.Parent
-                            return node
-
-                        return getNodeToMove(node.LeftChild)
-
                     node_to_move = getNodeToMove(node.RightChild)
                     node_to_move.Parent = node.Parent
+                    if not node.Parent:
+                        self.Root = node_to_move
+                        self.Root.LeftChild = node.LeftChild
+                        return True
                     node_to_move.RightChild = node.RightChild
                     node_to_move.LeftChild = node.LeftChild
                     if node.Parent.LeftChild.NodeKey == node.NodeKey:
@@ -133,8 +162,15 @@ class BST:
                 if node.LeftChild or node.RightChild:
                     if node.LeftChild:
                         node.LeftChild.Parent = node.Parent
+                        if not node.Parent:
+                            self.Root = node.LeftChild
+                            return True
                     if node.RightChild:
                         node.RightChild.Parent = node.Parent
+                        if not node.Parent:
+                            self.Root = node.RightChild
+                            return True
+
                     if node.Parent.LeftChild.NodeKey == node.NodeKey:
                         node.Parent.LeftChild = node.LeftChild or node.RightChild
                         return True
