@@ -75,7 +75,7 @@ class TestBST(unittest.TestCase):
     def test_add_key_that_is_not_in_tree_on_right(self):
         self.assertFalse(self.tree.FindNodeByKey(15).NodeHasKey)
 
-        self.tree.AddKeyValue(15, 15)
+        self.assertTrue(self.tree.AddKeyValue(15, 15))
 
         found_node = self.tree.FindNodeByKey(15)
         self.assertIsInstance(found_node, BSTFind)

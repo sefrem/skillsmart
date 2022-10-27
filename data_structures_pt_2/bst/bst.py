@@ -68,6 +68,8 @@ class BST:
 
         traverseTree(self.Root, found_node.Node.NodeKey)
 
+        return True
+
     def FinMinMax(self, FromNode, FindMax):
         found_node = BSTFind()
         node_to_start = None
