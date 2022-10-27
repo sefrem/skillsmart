@@ -265,6 +265,19 @@ class TestBST(unittest.TestCase):
         self.assertTrue(result)
 
         self.assertEqual(5, self.tree.Root.NodeValue)
+        self.assertIsNone(self.tree.Root.Parent)
+
+    def test_delete_root_from_tree_with_one_right_child(self):
+        self.tree.AddKeyValue(5, 5)
+
+        result = self.tree.DeleteNodeByKey(10)
+
+        self.assertTrue(result)
+
+        self.assertEqual(5, self.tree.Root.NodeValue)
+        self.assertIsNone(self.tree.Root.Parent)
+        self.assertIsNone(self.tree.Root.LeftChild)
+        self.assertIsNone(self.tree.Root.RightChild)
 
     def test_delete_root_from_balanced_tree(self):
         self.tree.AddKeyValue(15, 15)
@@ -277,11 +290,12 @@ class TestBST(unittest.TestCase):
         self.assertEqual(15, self.tree.Root.NodeValue)
 
         self.assertIsNone(self.tree.Root.RightChild)
+        self.assertEqual(5, self.tree.Root.LeftChild.NodeKey)
+        self.assertEqual(2, self.tree.Count())
 
     def test_delete_root_from_tree_with_2_nodes_on_right(self):
         self.tree.AddKeyValue(15, 15)
         self.tree.AddKeyValue(25, 25)
-        self.tree.AddKeyValue(5, 5)
 
         result = self.tree.DeleteNodeByKey(10)
 
@@ -301,7 +315,24 @@ class TestBST(unittest.TestCase):
 
         self.assertTrue(result)
 
+        self.assertEqual(15, self.tree.Root.NodeKey)
+
         self.assertEqual(4, self.tree.Count())
+
+    def test_delete_root_from_tree_with_multiple_levels_of_right_children_and_a_left_child(self):
+        self.tree.AddKeyValue(5, 5)
+        self.tree.AddKeyValue(15, 15)
+        self.tree.AddKeyValue(14, 14)
+        self.tree.AddKeyValue(16, 16)
+        self.tree.AddKeyValue(13, 13)
+
+        result = self.tree.DeleteNodeByKey(10)
+
+        self.assertTrue(result)
+
+        self.assertEqual(13, self.tree.Root.NodeKey)
+
+        self.assertEqual(5, self.tree.Count())
 
     def test_delete_root_from_tree_with_multiple_levels_of_right_children_and_left(self):
         self.tree.AddKeyValue(5, 5)
@@ -315,7 +346,7 @@ class TestBST(unittest.TestCase):
         self.assertTrue(result)
 
         self.assertEqual(13, self.tree.Root.NodeValue)
-        # self.assertEqual(5, self.tree.Count())
+        self.assertEqual(5, self.tree.Count())
 
     def test_count_tree_with_zero_nodes(self):
         tree = BST(None)
@@ -358,3 +389,29 @@ class TestBST(unittest.TestCase):
         self.assertTrue(self.tree.DeleteNodeByKey(11))
 
         self.assertEqual(9, self.tree.Count())
+
+    def test_delete_node_and_add_values(self):
+        self.tree.AddKeyValue(5, 5)
+        self.tree.AddKeyValue(15, 15)
+        self.tree.AddKeyValue(14, 14)
+        self.tree.AddKeyValue(3, 3)
+        self.tree.AddKeyValue(2, 2)
+        self.tree.AddKeyValue(16, 16)
+
+        self.assertEqual(7, self.tree.Count())
+
+        self.assertTrue(self.tree.DeleteNodeByKey(5))
+        self.assertEqual(6, self.tree.Count())
+        self.assertTrue(self.tree.DeleteNodeByKey(10))
+        self.assertEqual(5, self.tree.Count())
+        self.assertEqual(14, self.tree.Root.NodeKey)
+
+        self.tree.AddKeyValue(10, 10)
+
+        self.assertEqual(6, self.tree.Count())
+
+
+
+
+
+
