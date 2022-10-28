@@ -53,6 +53,10 @@ class BST:
         if found_node.NodeHasKey:
             return False
 
+        if self.Root is None:
+            self.Root = BSTNode(key, val, None)
+            return True
+
         def traverseTree(node: BSTNode, parent_key):
             if node is None:
                 return
