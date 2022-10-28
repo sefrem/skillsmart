@@ -107,6 +107,15 @@ class TestBST(unittest.TestCase):
     def test_add_node_that_is_in_tree(self):
         self.assertFalse(self.tree.AddKeyValue(10, 10))
 
+    def test_fin_min_in_empty_tree(self):
+        tree = BST(None)
+
+        min_node = tree.FinMinMax(None, False)
+
+        self.assertIsNone(min_node.Node)
+        self.assertFalse(min_node.NodeHasKey)
+        self.assertFalse(min_node.ToLeft)
+
     def test_find_min_key_search_from_root(self):
         self.tree.AddKeyValue(5, 5)
         self.tree.AddKeyValue(15, 15)
@@ -164,6 +173,11 @@ class TestBST(unittest.TestCase):
         self.assertEqual(14, min_node.Node.NodeKey)
         self.assertEqual(14, min_node.Node.NodeKey)
         self.assertEqual(13, min_node.Node.Parent.NodeKey)
+
+    def test_remove_node_from_empty_tree(self):
+        tree = BST(None)
+
+        self.assertFalse(tree.DeleteNodeByKey(10))
 
     def test_remove_node_with_zero_children(self):
         self.tree.AddKeyValue(5, 5)

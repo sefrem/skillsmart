@@ -78,6 +78,9 @@ class BST:
         found_node = BSTFind()
         node_to_start = None
 
+        if self.Root is None:
+            return BSTFind()
+
         if FromNode:
             def get_node(node: BSTNode):
                 if node is None:
@@ -122,6 +125,9 @@ class BST:
                 return node
 
             return getNodeToMove(node.LeftChild)
+
+        if self.Root is None:
+            return False
 
         if self.Root.LeftChild is None and self.Root.RightChild is None:
             self.Root = None
