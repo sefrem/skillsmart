@@ -106,6 +106,9 @@ class BST:
 
             traverseTree(node.LeftChild if not FindMax else node.RightChild)
 
+        if FromNode and node_to_start is None :
+            return found_node
+
         traverseTree(node_to_start or self.Root)
 
         return found_node
