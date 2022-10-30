@@ -167,7 +167,7 @@ class TestBST(unittest.TestCase):
         tree.AddKeyValue(13, 13)
         tree.AddKeyValue(15, 15)
 
-        max_node = tree.FinMinMax(8, True)
+        max_node = tree.FinMinMax(BSTNode(8, 8, None), True)
 
         self.assertTrue(max_node.NodeHasKey)
         self.assertEqual(15, max_node.Node.NodeKey)
@@ -182,7 +182,7 @@ class TestBST(unittest.TestCase):
         self.tree.AddKeyValue(4, 4)
         self.tree.AddKeyValue(6, 6)
 
-        min_node = self.tree.FinMinMax(5, False)
+        min_node = self.tree.FinMinMax(BSTNode(5, 5, BSTNode(3, 3, None)), False)
 
         self.assertEqual(4, min_node.Node.NodeKey)
         self.assertEqual(4, min_node.Node.NodeKey)
@@ -198,7 +198,7 @@ class TestBST(unittest.TestCase):
         self.tree.AddKeyValue(18, 18)
         self.tree.AddKeyValue(16, 16)
 
-        min_node = self.tree.FinMinMax(13, True)
+        min_node = self.tree.FinMinMax(BSTNode(13, 13, BSTNode(12, 12, None)), True)
 
         self.assertEqual(14, min_node.Node.NodeKey)
         self.assertEqual(14, min_node.Node.NodeKey)
@@ -209,7 +209,23 @@ class TestBST(unittest.TestCase):
         self.tree.AddKeyValue(15, 15)
         self.tree.AddKeyValue(18, 18)
 
-        self.assertFalse(self.tree.FinMinMax(22, False).NodeHasKey)
+        self.assertFalse(self.tree.FinMinMax(BSTNode(22, 22, BSTNode(13, 13, None)), False).NodeHasKey)
+
+    def test_find_node_from_node_passed_with_wrong_parent(self):
+        self.tree.AddKeyValue(3, 3)
+        self.tree.AddKeyValue(15, 15)
+        self.tree.AddKeyValue(12, 12)
+        self.tree.AddKeyValue(11, 11)
+        self.tree.AddKeyValue(13, 13)
+        self.tree.AddKeyValue(14, 14)
+        self.tree.AddKeyValue(18, 18)
+        self.tree.AddKeyValue(16, 16)
+
+        min_node = self.tree.FinMinMax(BSTNode(13, 13, BSTNode(12, 12, BSTNode(99, 99, None))), True)
+
+        self.assertEqual(14, min_node.Node.NodeKey)
+        self.assertEqual(14, min_node.Node.NodeKey)
+        self.assertEqual(13, min_node.Node.Parent.NodeKey)
 
     def test_remove_node_from_empty_tree(self):
         tree = BST(None)

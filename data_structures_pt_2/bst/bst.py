@@ -86,10 +86,12 @@ class BST:
                 if node is None:
                     return None
 
-                if node.NodeKey == FromNode:
-                    return node
+                if node.NodeKey == FromNode.NodeKey:
+                    if node.Parent is None and FromNode.Parent is None \
+                            or node.Parent.NodeKey == FromNode.Parent.NodeKey:
+                        return node
 
-                return get_node(node.LeftChild if FromNode < node.NodeKey else node.RightChild)
+                return get_node(node.LeftChild if FromNode.NodeKey < node.NodeKey else node.RightChild)
 
             node_to_start = get_node(self.Root)
 
