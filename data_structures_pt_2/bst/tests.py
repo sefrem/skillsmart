@@ -145,11 +145,32 @@ class TestBST(unittest.TestCase):
         self.tree.AddKeyValue(2, 2)
         self.tree.AddKeyValue(20, 20)
 
-        min_node = self.tree.FinMinMax(None, True)
+        max_node = self.tree.FinMinMax(None, True)
 
-        self.assertEqual(20, min_node.Node.NodeKey)
-        self.assertEqual(20, min_node.Node.NodeKey)
-        self.assertEqual(15, min_node.Node.Parent.NodeKey)
+        self.assertEqual(20, max_node.Node.NodeKey)
+        self.assertEqual(15, max_node.Node.Parent.NodeKey)
+
+    def test_find_max_search_from_passed_root(self):
+        tree = BST(BSTNode(8, 8, None))
+        tree.AddKeyValue(4, 4)
+        tree.AddKeyValue(12, 12)
+        tree.AddKeyValue(2, 2)
+        tree.AddKeyValue(6, 6)
+        tree.AddKeyValue(10, 10)
+        tree.AddKeyValue(14, 14)
+        tree.AddKeyValue(1, 1)
+        tree.AddKeyValue(3, 3)
+        tree.AddKeyValue(5, 5)
+        tree.AddKeyValue(7, 7)
+        tree.AddKeyValue(9, 9)
+        tree.AddKeyValue(11, 11)
+        tree.AddKeyValue(13, 13)
+        tree.AddKeyValue(15, 15)
+
+        max_node = tree.FinMinMax(8, True)
+
+        self.assertTrue(max_node.NodeHasKey)
+        self.assertEqual(15, max_node.Node.NodeKey)
 
     def test_find_min_search_from_node(self):
         self.tree.AddKeyValue(9, 9)
