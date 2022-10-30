@@ -79,7 +79,7 @@ class BST:
         node_to_start = None
 
         if self.Root is None:
-            return BSTFind()
+            return found_node
 
         if FromNode:
             def get_node(node: BSTNode):
@@ -93,21 +93,16 @@ class BST:
 
             node_to_start = get_node(self.Root)
 
+            if node_to_start is None:
+                return found_node
+
         def traverseTree(node: BSTNode):
-            if not FindMax and node.LeftChild is None:
+            if (FindMax and node.RightChild is None) or (not FindMax and node.LeftChild is None):
                 found_node.Node = node
                 found_node.NodeHasKey = True
                 return
 
-            if FindMax and node.RightChild is None:
-                found_node.Node = node
-                found_node.NodeHasKey = True
-                return
-
-            traverseTree(node.LeftChild if not FindMax else node.RightChild)
-
-        if FromNode and node_to_start is None:
-            return found_node
+            traverseTree(node.RightChild if FindMax else node.LeftChild)
 
         traverseTree(node_to_start or self.Root)
 
