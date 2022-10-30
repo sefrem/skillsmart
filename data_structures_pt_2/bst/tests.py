@@ -138,6 +138,19 @@ class TestBST(unittest.TestCase):
         self.assertEqual(2, min_node.Node.NodeKey)
         self.assertEqual(4, min_node.Node.Parent.NodeKey)
 
+    def test_find_min_key_search_from_passed_root(self):
+        self.tree.AddKeyValue(5, 5)
+        self.tree.AddKeyValue(15, 15)
+        self.tree.AddKeyValue(4, 4)
+        self.tree.AddKeyValue(2, 2)
+        self.tree.AddKeyValue(20, 20)
+
+        min_node = self.tree.FinMinMax(BSTNode(10, 10, None), False)
+
+        self.assertEqual(2, min_node.Node.NodeKey)
+        self.assertEqual(2, min_node.Node.NodeKey)
+        self.assertEqual(4, min_node.Node.Parent.NodeKey)
+
     def test_find_max_key_search_from_root(self):
         self.tree.AddKeyValue(5, 5)
         self.tree.AddKeyValue(15, 15)
@@ -188,6 +201,22 @@ class TestBST(unittest.TestCase):
         self.assertEqual(4, min_node.Node.NodeKey)
         self.assertEqual(5, min_node.Node.Parent.NodeKey)
 
+    def test_find_min_search_from_node_with_wrong_parent(self):
+        self.tree.AddKeyValue(9, 9)
+        self.tree.AddKeyValue(15, 15)
+        self.tree.AddKeyValue(7, 7)
+        self.tree.AddKeyValue(8, 8)
+        self.tree.AddKeyValue(3, 3)
+        self.tree.AddKeyValue(5, 5)
+        self.tree.AddKeyValue(4, 4)
+        self.tree.AddKeyValue(6, 6)
+
+        min_node = self.tree.FinMinMax(BSTNode(5, 5, BSTNode(14, 14, None)), False)
+
+        self.assertEqual(4, min_node.Node.NodeKey)
+        self.assertEqual(4, min_node.Node.NodeKey)
+        self.assertEqual(5, min_node.Node.Parent.NodeKey)
+
     def test_find_max_search_from_node(self):
         self.tree.AddKeyValue(3, 3)
         self.tree.AddKeyValue(15, 15)
@@ -198,7 +227,7 @@ class TestBST(unittest.TestCase):
         self.tree.AddKeyValue(18, 18)
         self.tree.AddKeyValue(16, 16)
 
-        min_node = self.tree.FinMinMax(BSTNode(13, 13, BSTNode(12, 12, None)), True)
+        min_node = self.tree.FinMinMax(BSTNode(13, 13, None), True)
 
         self.assertEqual(14, min_node.Node.NodeKey)
         self.assertEqual(14, min_node.Node.NodeKey)

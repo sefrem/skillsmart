@@ -87,9 +87,7 @@ class BST:
                     return None
 
                 if node.NodeKey == FromNode.NodeKey:
-                    if node.Parent is None and FromNode.Parent is None \
-                            or node.Parent.NodeKey == FromNode.Parent.NodeKey:
-                        return node
+                    return node
 
                 return get_node(node.LeftChild if FromNode.NodeKey < node.NodeKey else node.RightChild)
 
@@ -108,7 +106,7 @@ class BST:
 
             traverseTree(node.LeftChild if not FindMax else node.RightChild)
 
-        if FromNode and node_to_start is None :
+        if FromNode and node_to_start is None:
             return found_node
 
         traverseTree(node_to_start or self.Root)
