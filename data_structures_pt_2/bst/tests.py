@@ -398,6 +398,34 @@ class TestBST(unittest.TestCase):
         self.assertFalse(replacing_node.Node.RightChild.LeftChild)
         self.assertEqual(14, self.tree_from_pic.Count())
 
+    def test_remove_node_from_tree_from_pic_less_that_root_child_of_root(self):
+        removed = self.tree_from_pic.DeleteNodeByKey(4)
+
+        self.assertTrue(removed)
+
+        self.assertFalse(self.tree_from_pic.FindNodeByKey(4).NodeHasKey)
+        self.assertEqual(5, self.tree_from_pic.Root.LeftChild.NodeKey)
+        self.assertEqual(8, self.tree_from_pic.Root.RightChild.Parent.NodeKey)
+
+        replacing_node = self.tree_from_pic.FindNodeByKey(5)
+        self.assertEqual(6, replacing_node.Node.RightChild.NodeKey)
+        self.assertEqual(5, replacing_node.Node.RightChild.Parent.NodeKey)
+        self.assertIsNone(replacing_node.Node.RightChild.LeftChild)
+        self.assertEqual(14, self.tree_from_pic.Count())
+
+    def test_remove_node_from_tree_from_pic_node_less_that_root(self):
+        removed = self.tree_from_pic.DeleteNodeByKey(2)
+
+        self.assertTrue(removed)
+
+        self.assertFalse(self.tree_from_pic.FindNodeByKey(2).NodeHasKey)
+
+        replacing_node = self.tree_from_pic.FindNodeByKey(3)
+        self.assertEqual(1, replacing_node.Node.LeftChild.NodeKey)
+        self.assertIsNone(replacing_node.Node.RightChild)
+        self.assertEqual(3, replacing_node.Node.LeftChild.Parent.NodeKey)
+        self.assertEqual(14, self.tree_from_pic.Count())
+
     def test_remove_root_from_tree_from_pic(self):
         removed = self.tree_from_pic.DeleteNodeByKey(8)
 
@@ -410,6 +438,24 @@ class TestBST(unittest.TestCase):
         self.assertEqual(9, self.tree_from_pic.Root.RightChild.Parent.NodeKey)
 
         self.assertIsNone(self.tree_from_pic.FindNodeByKey(10).Node.LeftChild)
+
+    def test_remove_leaf_node_from_tree_with_pic_more_than_root(self):
+        removed = self.tree_from_pic.DeleteNodeByKey(9)
+
+        self.assertTrue(removed)
+
+        self.assertFalse(self.tree_from_pic.FindNodeByKey(9).NodeHasKey)
+        self.assertIsNone(self.tree_from_pic.FindNodeByKey(10).Node.LeftChild)
+        self.assertEqual(14, self.tree_from_pic.Count())
+
+    def test_remove_leaf_node_from_tree_with_pic_less_than_root(self):
+        removed = self.tree_from_pic.DeleteNodeByKey(3)
+
+        self.assertTrue(removed)
+
+        self.assertFalse(self.tree_from_pic.FindNodeByKey(3).NodeHasKey)
+        self.assertIsNone(self.tree_from_pic.FindNodeByKey(2).Node.RightChild)
+        self.assertEqual(14, self.tree_from_pic.Count())
 
     def test_remove_non_existing_node_from_tree_with_only_root(self):
         tree = BST(BSTNode(10, 10, None))

@@ -168,8 +168,10 @@ class BST:
                         node.Parent.RightChild = node.LeftChild or node.RightChild
                         return True
 
-                node.Parent.LeftChild = None
-                node.Parent.RightChild = None
+                if node.Parent.LeftChild and node.NodeKey == node.Parent.LeftChild.NodeKey:
+                    node.Parent.LeftChild = None
+                if node.Parent.RightChild and node.NodeKey == node.Parent.RightChild.NodeKey:
+                    node.Parent.RightChild = None
                 return True
 
             return traverseTree(node.LeftChild if key < node.NodeKey else node.RightChild)
