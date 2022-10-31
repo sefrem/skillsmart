@@ -106,15 +106,11 @@ class BST:
     def DeleteNodeByKey(self, key):
 
         def getNodeToMove(node: BSTNode):
-            if node.LeftChild is None and node.RightChild is None:
+            if (node.LeftChild is None and node.RightChild is None) or (node.LeftChild is None and node.RightChild):
                 if node.Parent.LeftChild and node.Parent.LeftChild.NodeKey == node.NodeKey:
                     node.Parent.LeftChild = None
                 if node.Parent.RightChild and node.Parent.RightChild.NodeKey == node.NodeKey:
                     node.Parent.RightChild = None
-                return node
-            if node.LeftChild is None and node.RightChild:
-                node.Parent.LeftChild = node.RightChild
-                node.RightChild.Parent = node.Parent
                 return node
 
             return getNodeToMove(node.LeftChild)
@@ -136,14 +132,17 @@ class BST:
                     node_to_move.Parent = node.Parent
                     if node.RightChild and node.RightChild.NodeKey != node_to_move.NodeKey:
                         node_to_move.RightChild = node.RightChild
-                    node_to_move.LeftChild = node.LeftChild
-                    if self.Root.Parent is None:
+                        node_to_move.RightChild.Parent = node_to_move
+                    if node.LeftChild and node.LeftChild.NodeKey != node_to_move.NodeKey:
+                        node_to_move.LeftChild = node.LeftChild
+                        node_to_move.LeftChild.Parent = node_to_move
+                    if self.Root is None or self.Root.NodeKey == node.NodeKey:
                         self.Root = node_to_move
                         return True
-                    if node.Parent.LeftChild.NodeKey == node.NodeKey:
+                    if node.Parent and node.Parent.LeftChild.NodeKey == node.NodeKey:
                         node.Parent.LeftChild = node_to_move
                         return True
-                    if node.Parent.RightChild.NodeKey == node.NodeKey:
+                    if node.Parent and node.Parent.RightChild.NodeKey == node.NodeKey:
                         node.Parent.RightChild = node_to_move
                         return True
 

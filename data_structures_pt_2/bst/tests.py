@@ -347,6 +347,10 @@ class TestBST(unittest.TestCase):
         self.assertEqual(10, found_node.Node.NodeKey)
         self.assertFalse(found_node.NodeHasKey)
         self.assertTrue(found_node.ToLeft)
+        self.assertIsNone(self.tree.Root.LeftChild)
+        self.assertIsNone(self.tree.Root.RightChild)
+        self.assertEqual(1, self.tree.Count())
+
 
     def test_remove_node_with_one_child(self):
         self.tree.AddKeyValue(5, 5)
@@ -366,6 +370,15 @@ class TestBST(unittest.TestCase):
         found_new_child = self.tree.FindNodeByKey(4)
         self.assertEqual(4, found_new_child.Node.NodeKey)
         self.assertEqual(found_node_before.Node.Parent.NodeKey, found_new_child.Node.Parent.NodeKey)
+        self.assertEqual(self.tree.Root.LeftChild.NodeKey, found_new_child.Node.NodeKey)
+
+    def test_remove_node_with_two_children_from_tree_from_pic(self):
+        self.tree_from_pic.AddKeyValue(16, 16)
+        remove = self.tree_from_pic.DeleteNodeByKey(14)
+        self.assertTrue(remove)
+
+        self.assertEqual(15, self.tree_from_pic.Count())
+
 
     def test_remove_node_with_two_children(self):
         self.tree.AddKeyValue(3, 3)
@@ -390,6 +403,7 @@ class TestBST(unittest.TestCase):
         self.assertEqual(16, replacing_node.Node.NodeKey)
         self.assertEqual(10, replacing_node.Node.Parent.NodeKey)
         self.assertEqual(18, replacing_node.Node.RightChild.NodeKey)
+        self.assertEqual(10, self.tree.Root.NodeKey)
 
     def test_remove_node_with_one_right_child(self):
         self.tree.AddKeyValue(3, 3)
