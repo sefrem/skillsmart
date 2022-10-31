@@ -119,8 +119,11 @@ class BST:
             return False
 
         if self.Root.LeftChild is None and self.Root.RightChild is None:
-            self.Root = None
-            return True
+            if self.Root.NodeKey == key:
+                self.Root = None
+                return True
+            if self.Root.NodeKey != key:
+                return False
 
         def traverseTree(node: BSTNode):
             if node is None:
