@@ -127,36 +127,28 @@ class TestBST(unittest.TestCase):
 
         min_node = tree.FinMinMax(None, False)
 
-        self.assertIsNone(min_node.Node)
-        self.assertFalse(min_node.NodeHasKey)
-        self.assertFalse(min_node.ToLeft)
+        self.assertIsNone(min_node)
 
     def test_find_min_in_empty_tree_passed_root(self):
         tree = BST(None)
 
         min_node = tree.FinMinMax(BSTNode(20, 20, None), False)
 
-        self.assertIsNone(min_node.Node)
-        self.assertFalse(min_node.NodeHasKey)
-        self.assertFalse(min_node.ToLeft)
+        self.assertIsNone(min_node)
 
     def test_find_max_in_empty_tree(self):
         tree = BST(None)
 
-        min_node = tree.FinMinMax(None, True)
+        max_node = tree.FinMinMax(None, True)
 
-        self.assertIsNone(min_node.Node)
-        self.assertFalse(min_node.NodeHasKey)
-        self.assertFalse(min_node.ToLeft)
+        self.assertIsNone(max_node)
 
     def test_find_max_in_empty_tree_passed_root(self):
         tree = BST(None)
 
-        min_node = tree.FinMinMax(BSTNode(10, 10, None), True)
+        max_node = tree.FinMinMax(BSTNode(10, 10, None), True)
 
-        self.assertIsNone(min_node.Node)
-        self.assertFalse(min_node.NodeHasKey)
-        self.assertFalse(min_node.ToLeft)
+        self.assertIsNone(max_node)
 
     def test_find_min_key_search_from_root(self):
         self.tree.AddKeyValue(5, 5)
@@ -167,9 +159,8 @@ class TestBST(unittest.TestCase):
 
         min_node = self.tree.FinMinMax(None, False)
 
-        self.assertEqual(2, min_node.Node.NodeKey)
-        self.assertEqual(2, min_node.Node.NodeKey)
-        self.assertEqual(4, min_node.Node.Parent.NodeKey)
+        self.assertEqual(2, min_node.NodeKey)
+        self.assertEqual(4, min_node.Parent.NodeKey)
 
     def test_find_min_key_search_from_passed_root(self):
         self.tree.AddKeyValue(5, 5)
@@ -180,9 +171,8 @@ class TestBST(unittest.TestCase):
 
         min_node = self.tree.FinMinMax(BSTNode(10, 10, None), False)
 
-        self.assertEqual(2, min_node.Node.NodeKey)
-        self.assertEqual(2, min_node.Node.NodeKey)
-        self.assertEqual(4, min_node.Node.Parent.NodeKey)
+        self.assertEqual(2, min_node.NodeKey)
+        self.assertEqual(4, min_node.Parent.NodeKey)
 
     def test_find_max_key_search_from_root(self):
         self.tree.AddKeyValue(5, 5)
@@ -193,68 +183,59 @@ class TestBST(unittest.TestCase):
 
         max_node = self.tree.FinMinMax(None, True)
 
-        self.assertEqual(20, max_node.Node.NodeKey)
-        self.assertEqual(15, max_node.Node.Parent.NodeKey)
+        self.assertEqual(20, max_node.NodeKey)
+        self.assertEqual(15, max_node.Parent.NodeKey)
 
     def test_find_max_search_from_passed_root(self):
         max_node = self.tree_from_pic.FinMinMax(BSTNode(8, 8, None), True)
 
-        self.assertTrue(max_node.NodeHasKey)
-        self.assertEqual(15, max_node.Node.NodeKey)
+        self.assertEqual(15, max_node.NodeKey)
 
     def test_find_min_in_tree_from_pic_search_from_root(self):
         min_node = self.tree_from_pic.FinMinMax(None, False)
 
-        self.assertTrue(min_node.NodeHasKey)
-        self.assertEqual(1, min_node.Node.NodeKey)
-        self.assertEqual(2, min_node.Node.Parent.NodeKey)
+        self.assertEqual(1, min_node.NodeKey)
+        self.assertEqual(2, min_node.Parent.NodeKey)
 
     def test_find_min_in_tree_from_pic_search_from_root_passed_as_node(self):
         min_node = self.tree_from_pic.FinMinMax(BSTNode(8, 8, None), False)
 
-        self.assertTrue(min_node.NodeHasKey)
-        self.assertEqual(1, min_node.Node.NodeKey)
-        self.assertEqual(2, min_node.Node.Parent.NodeKey)
+        self.assertEqual(1, min_node.NodeKey)
+        self.assertEqual(2, min_node.Parent.NodeKey)
 
     def test_find_max_in_tree_from_pic_search_from_root(self):
         max_node = self.tree_from_pic.FinMinMax(None, True)
 
-        self.assertTrue(max_node.NodeHasKey)
-        self.assertEqual(15, max_node.Node.NodeKey)
-        self.assertEqual(14, max_node.Node.Parent.NodeKey)
+        self.assertEqual(15, max_node.NodeKey)
+        self.assertEqual(14, max_node.Parent.NodeKey)
 
     def test_find_max_in_tree_from_pic_search_from_root_passed_as_node(self):
         max_node = self.tree_from_pic.FinMinMax(BSTNode(8, 8, None), True)
 
-        self.assertTrue(max_node.NodeHasKey)
-        self.assertEqual(15, max_node.Node.NodeKey)
-        self.assertEqual(14, max_node.Node.Parent.NodeKey)
+        self.assertEqual(15, max_node.NodeKey)
+        self.assertEqual(14, max_node.Parent.NodeKey)
 
     def test_find_min_pic_tree_search_from_node(self):
         min_node = self.tree_from_pic.FinMinMax(BSTNode(12, 12, None), False)
 
-        self.assertTrue(min_node.NodeHasKey)
-        self.assertEqual(9, min_node.Node.NodeKey)
-        self.assertEqual(10, min_node.Node.Parent.NodeKey)
+        self.assertEqual(9, min_node.NodeKey)
+        self.assertEqual(10, min_node.Parent.NodeKey)
 
     def test_find_min_pic_tree_search_from_non_existent_node(self):
         min_node = self.tree_from_pic.FinMinMax(BSTNode(100, 100, None), False)
 
-        self.assertFalse(min_node.NodeHasKey)
-        self.assertIsNone(min_node.Node)
+        self.assertIsNone(min_node)
 
     def test_find_max_pic_tree_search_from_node(self):
         max_node = self.tree_from_pic.FinMinMax(BSTNode(4, 4, None), True)
 
-        self.assertTrue(max_node.NodeHasKey)
-        self.assertEqual(7, max_node.Node.NodeKey)
-        self.assertEqual(6, max_node.Node.Parent.NodeKey)
+        self.assertEqual(7, max_node.NodeKey)
+        self.assertEqual(6, max_node.Parent.NodeKey)
 
     def test_find_max_pic_tree_search_from_non_existent_node(self):
         max_node = self.tree_from_pic.FinMinMax(BSTNode(400, 400, None), True)
 
-        self.assertFalse(max_node.NodeHasKey)
-        self.assertIsNone(max_node.Node)
+        self.assertIsNone(max_node)
 
     def test_find_min_search_from_node(self):
         self.tree.AddKeyValue(9, 9)
@@ -268,9 +249,8 @@ class TestBST(unittest.TestCase):
 
         min_node = self.tree.FinMinMax(BSTNode(5, 5, BSTNode(3, 3, None)), False)
 
-        self.assertEqual(4, min_node.Node.NodeKey)
-        self.assertEqual(4, min_node.Node.NodeKey)
-        self.assertEqual(5, min_node.Node.Parent.NodeKey)
+        self.assertEqual(4, min_node.NodeKey)
+        self.assertEqual(5, min_node.Parent.NodeKey)
 
     def test_find_min_search_from_node_with_wrong_parent(self):
         self.tree.AddKeyValue(9, 9)
@@ -284,9 +264,8 @@ class TestBST(unittest.TestCase):
 
         min_node = self.tree.FinMinMax(BSTNode(5, 5, BSTNode(14, 14, None)), False)
 
-        self.assertEqual(4, min_node.Node.NodeKey)
-        self.assertEqual(4, min_node.Node.NodeKey)
-        self.assertEqual(5, min_node.Node.Parent.NodeKey)
+        self.assertEqual(4, min_node.NodeKey)
+        self.assertEqual(5, min_node.Parent.NodeKey)
 
     def test_find_max_search_from_node(self):
         self.tree.AddKeyValue(3, 3)
@@ -300,9 +279,8 @@ class TestBST(unittest.TestCase):
 
         min_node = self.tree.FinMinMax(BSTNode(13, 13, None), True)
 
-        self.assertEqual(14, min_node.Node.NodeKey)
-        self.assertEqual(14, min_node.Node.NodeKey)
-        self.assertEqual(13, min_node.Node.Parent.NodeKey)
+        self.assertEqual(14, min_node.NodeKey)
+        self.assertEqual(13, min_node.Parent.NodeKey)
 
     def test_find_max_search_from_node_with_wrong_parent(self):
         self.tree.AddKeyValue(3, 3)
@@ -316,9 +294,8 @@ class TestBST(unittest.TestCase):
 
         min_node = self.tree.FinMinMax(BSTNode(13, 13, BSTNode(99, 99, None)), True)
 
-        self.assertEqual(14, min_node.Node.NodeKey)
-        self.assertEqual(14, min_node.Node.NodeKey)
-        self.assertEqual(13, min_node.Node.Parent.NodeKey)
+        self.assertEqual(14, min_node.NodeKey)
+        self.assertEqual(13, min_node.Parent.NodeKey)
 
     def test_find_min_from_non_existent_node(self):
         self.tree.AddKeyValue(3, 3)
@@ -327,8 +304,7 @@ class TestBST(unittest.TestCase):
 
         min_node = self.tree.FinMinMax(BSTNode(22, 22, BSTNode(13, 13, None)), False)
 
-        self.assertFalse(min_node.NodeHasKey)
-        self.assertIsNone(min_node.Node)
+        self.assertIsNone(min_node)
 
     def test_find_msx_from_non_existent_node(self):
         self.tree.AddKeyValue(3, 3)
@@ -337,8 +313,7 @@ class TestBST(unittest.TestCase):
 
         max_node = self.tree.FinMinMax(BSTNode(22, 22, None), False)
 
-        self.assertFalse(max_node.NodeHasKey)
-        self.assertIsNone(max_node.Node)
+        self.assertIsNone(max_node)
 
     def test_find_node_from_node_passed_with_wrong_parent(self):
         self.tree.AddKeyValue(3, 3)
@@ -352,9 +327,8 @@ class TestBST(unittest.TestCase):
 
         min_node = self.tree.FinMinMax(BSTNode(13, 13, BSTNode(12, 12, BSTNode(99, 99, None))), True)
 
-        self.assertEqual(14, min_node.Node.NodeKey)
-        self.assertEqual(14, min_node.Node.NodeKey)
-        self.assertEqual(13, min_node.Node.Parent.NodeKey)
+        self.assertEqual(14, min_node.NodeKey)
+        self.assertEqual(13, min_node.Parent.NodeKey)
 
     def test_remove_node_from_empty_tree(self):
         tree = BST(None)
