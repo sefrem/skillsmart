@@ -704,3 +704,76 @@ class TestBST(unittest.TestCase):
         self.tree.AddKeyValue(10, 10)
 
         self.assertEqual(6, self.tree.Count())
+
+    def test_bfs_for_empty_tree(self):
+        tree = BST(None)
+
+        self.assertEqual((), tree.WideAllNodes())
+
+    def test_bfs_for_tree_with_one_node(self):
+        tree = BST(BSTNode(10, 10, None))
+
+        nodes = tree.WideAllNodes()
+        self.assertEqual(1, len(nodes))
+        self.assertEqual(10, nodes[0].NodeKey)
+
+    def test_bfs_for_tree_from_pic(self):
+        expected = [8, 4, 12, 2, 6, 10, 14, 1, 3, 5, 7, 9, 11, 13, 15]
+
+        nodes = self.tree_from_pic.WideAllNodes()
+        self.assertEqual(len(expected), len(nodes))
+        for index, node in enumerate(nodes):
+            self.assertEqual(expected[index], node.NodeKey)
+
+    def test_dfs_in_order_tree_from_pic(self):
+        expected = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+
+        nodes = self.tree_from_pic.DeepAllNodes(0)
+        self.assertEqual(len(expected), len(nodes))
+        for index, node in enumerate(nodes):
+            self.assertEqual(expected[index], node.NodeKey)
+
+    def test_dfs_empty_tree(self):
+        tree = BST(None)
+
+        nodes = tree.DeepAllNodes(0)
+        self.assertEqual((), nodes)
+
+        nodes = tree.DeepAllNodes(1)
+        self.assertEqual((), nodes)
+
+        nodes = tree.DeepAllNodes(2)
+        self.assertEqual((), nodes)
+
+    def test_dfs_for_tree_with_one_node(self):
+        tree = BST(BSTNode(10, 10, None))
+
+        nodes = tree.DeepAllNodes(0)
+        self.assertEqual(1, len(nodes))
+        self.assertEqual(10, nodes[0].NodeKey)
+
+        nodes = tree.DeepAllNodes(1)
+        self.assertEqual(1, len(nodes))
+        self.assertEqual(10, nodes[0].NodeKey)
+
+        nodes = tree.DeepAllNodes(2)
+        self.assertEqual(1, len(nodes))
+        self.assertEqual(10, nodes[0].NodeKey)
+
+    def test_dfs_post_order_tree_from_pic(self):
+        expected = [1, 3, 2, 5, 7, 6, 4, 9, 11, 10, 13, 15, 14, 12, 8]
+
+        nodes = self.tree_from_pic.DeepAllNodes(1)
+        self.assertEqual(len(expected), len(nodes))
+        for index, node in enumerate(nodes):
+            self.assertEqual(expected[index], node.NodeKey)
+
+    def test_dfs_pre_order_tree_from_pic(self):
+        expected = [8, 4, 2, 1, 3, 6, 5, 7, 12, 10, 9, 11, 14, 13, 15]
+
+        nodes = self.tree_from_pic.DeepAllNodes(2)
+        self.assertEqual(len(expected), len(nodes))
+        for index, node in enumerate(nodes):
+            self.assertEqual(expected[index], node.NodeKey)
+
+

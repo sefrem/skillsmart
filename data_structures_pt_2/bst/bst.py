@@ -1,3 +1,6 @@
+from typing import List
+
+
 class BSTNode:
 
     def __init__(self, key, val, parent):
@@ -192,3 +195,45 @@ class BST:
         traverseTree(self.Root)
 
         return count[0]
+
+    def WideAllNodes(self):
+        result = ()
+        queue = [self.Root] if self.Root else []
+
+        while len(queue) > 0:
+            node = queue.pop(0)
+            result += (node,)
+
+            if node.LeftChild:
+                queue.append(node.LeftChild)
+            if node.RightChild:
+                queue.append(node.RightChild)
+
+        return result
+
+    def DeepAllNodes(self, order):
+        result = ()
+
+        def traverse(node):
+            nonlocal result
+            if node is None:
+                return
+
+            if order == 0:
+                traverse(node.LeftChild)
+                result += (node,)
+                traverse(node.RightChild)
+
+            if order == 1:
+                traverse(node.LeftChild)
+                traverse(node.RightChild)
+                result += (node,)
+
+            if order == 2:
+                result += (node,)
+                traverse(node.LeftChild)
+                traverse(node.RightChild)
+
+        traverse(self.Root)
+
+        return result
