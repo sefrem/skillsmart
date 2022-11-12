@@ -1,17 +1,17 @@
 class BSTNode:
 
     def __init__(self, key, parent):
-        self.NodeKey = key  # ключ узла
-        self.Parent = parent  # родитель или None для корня
-        self.LeftChild = None  # левый потомок
-        self.RightChild = None  # правый потомок
-        self.Level = 0  # уровень узла
+        self.NodeKey = key
+        self.Parent = parent
+        self.LeftChild = None
+        self.RightChild = None
+        self.Level = 0
 
 
 class BalancedBST:
 
     def __init__(self):
-        self.Root = None  # корень дерева
+        self.Root = None
 
     def GenerateTree(self, a):
         a.sort()
