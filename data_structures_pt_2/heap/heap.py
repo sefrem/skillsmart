@@ -9,25 +9,56 @@ class Heap:
     def GetRightChildIndex(self, index):
         return 2 * index + 2
 
+    def GetParentIndex(self, index):
+        return int((index - 1) / 2) if index % 2 != 0 else int((index - 2) / 2)
+
+    def SwitchParent(self, childIndex):
+        parentIndex = self.GetParentIndex(childIndex)
+        if self.HeapArray[childIndex] < self.HeapArray[parentIndex]:
+            return
+
+        self.HeapArray[childIndex], self.HeapArray[parentIndex] = self.HeapArray[parentIndex], self.HeapArray[
+            childIndex]
+        if parentIndex == 0:
+            return
+
+        self.SwitchParent(parentIndex)
+
+    def SwitchChild(self, index):
+        left_child_index = self.GetLeftChildIndex(index)
+        right_child_index = self.GetRightChildIndex(index)
+        if left_child_index >= len(self.HeapArray) and right_child_index >= len(self.HeapArray):
+            return
+        current_element = self.HeapArray[index]
+        left_child = self.HeapArray[left_child_index]
+        right_child = self.HeapArray[right_child_index]
+        if left_child < current_element and right_child < current_element:
+            return
+
+        if left_child > current_element and right_child > current_element:
+            next_index = left_child_index if left_child > right_child else right_child_index
+        if left_child > current_element > right_child:
+            next_index = left_child_index
+        if left_child < current_element < right_child:
+            next_index = right_child_index
+
+        self.HeapArray[index], self.HeapArray[next_index] = self.HeapArray[next_index], self.HeapArray[index]
+
+        self.SwitchChild(next_index)
+
     def MakeHeap(self, a, depth):
-        a.sort(reverse=True)
+        if len(a) == 0:
+            self.HeapArray = []
+            return self.HeapArray
+
         self.HeapArray = [None] * (2 ** (depth + 1) - 1)
-        parent_index = 0
-        isLeft = True
 
         for index, i in enumerate(a):
             if index == 0:
                 self.HeapArray[0] = i
                 continue
-            if isLeft:
-                child_index = self.GetLeftChildIndex(parent_index)
-                self.HeapArray[child_index] = i
-                isLeft = False
-            else:
-                child_index = self.GetRightChildIndex(parent_index)
-                self.HeapArray[child_index] = i
-                isLeft = True
-                parent_index += 1
+            self.HeapArray[index] = i
+            self.SwitchParent(index)
 
         return self.HeapArray
 
@@ -39,44 +70,15 @@ class Heap:
         self.HeapArray[0] = self.HeapArray[-1]
         self.HeapArray[-1] = None
 
-        def MoveRoot(index):
-            left_child = self.HeapArray[self.GetLeftChildIndex(index)]
-            right_child = self.HeapArray[self.GetRightChildIndex(index)]
-
-            while (left_child and left_child > self.HeapArray[index]) or (
-                    right_child and right_child > self.HeapArray[index]):
-                if left_child > self.HeapArray[index]:
-                    left_child_index = self.GetLeftChildIndex(index)
-                    self.HeapArray[index], self.HeapArray[left_child_index] = self.HeapArray[left_child_index], \
-                                                                              self.HeapArray[index]
-                    index = left_child_index
-                    next_left_child_index = self.GetLeftChildIndex(index)
-                    if next_left_child_index < len(self.HeapArray):
-                        left_child = self.HeapArray[self.GetLeftChildIndex(index)]
-                        right_child = self.HeapArray[self.GetRightChildIndex(index)]
-                    else:
-                        left_child = None
-                        right_child = None
-                    continue
-
-                if right_child > self.HeapArray[index]:
-                    right_child_index = self.GetRightChildIndex(index)
-                    self.HeapArray[index], self.HeapArray[right_child_index] = self.HeapArray[right_child_index], \
-                                                                               self.HeapArray[index]
-
-                    index = right_child_index
-                    next_right_child_index = self.GetRightChildIndex(index)
-                    if next_right_child_index < len(self.HeapArray):
-                        left_child = self.HeapArray[self.GetLeftChildIndex(index)]
-                        right_child = self.HeapArray[self.GetRightChildIndex(index)]
-                    else:
-                        left_child = None
-                        right_child = None
-                    continue
-
-        MoveRoot(0)
+        self.SwitchChild(0)
 
         return max
 
     def Add(self, key):
-        return False
+        for index, i in enumerate(self.HeapArray):
+            if i is None:
+                self.HeapArray[index] = key
+                self.SwitchParent(index)
+                break
+            if index == len(self.HeapArray)-1:
+                return False
