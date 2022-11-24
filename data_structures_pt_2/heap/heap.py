@@ -80,5 +80,5 @@ class Heap:
                 self.HeapArray[index] = key
                 self.SwitchParent(index)
                 break
-            if index == len(self.HeapArray)-1:
-                return False
+
+        return False

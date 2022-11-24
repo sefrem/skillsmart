@@ -162,7 +162,6 @@ class TestSimpleTree(unittest.TestCase):
 
         self.assertEqual([1, 3, 2, 4, 5], self.tree.GetAllNodes())
 
-
     def test_nodes_count_after_add_and_delete(self):
         self.tree.AddChild(SimpleTreeNode(1, None), SimpleTreeNode(2, None))
         self.assertEqual(2, self.tree.Count())
@@ -187,6 +186,7 @@ class TestSimpleTree(unittest.TestCase):
         self.tree.AddChild(SimpleTreeNode(1, None), SimpleTreeNode(2, None))
         self.tree.AddChild(SimpleTreeNode(2, None), SimpleTreeNode(3, None))
         self.tree.AddChild(SimpleTreeNode(3, None), SimpleTreeNode(4, None))
+        self.tree.AddChild(SimpleTreeNode(3, None), SimpleTreeNode(6, None))
         self.tree.AddChild(SimpleTreeNode(4, None), SimpleTreeNode(5, None))
 
         self.tree.AddLevel()
@@ -196,9 +196,11 @@ class TestSimpleTree(unittest.TestCase):
         node_3 = get_node(self.tree, 3)
         node_4 = get_node(self.tree, 4)
         node_5 = get_node(self.tree, 5)
+        node_6 = get_node(self.tree, 6)
 
         self.assertEqual((1, 1), (node_1.NodeValue, node_1.Level))
         self.assertEqual((2, 2), (node_2.NodeValue, node_2.Level))
         self.assertEqual((3, 3), (node_3.NodeValue, node_3.Level))
         self.assertEqual((4, 4), (node_4.NodeValue, node_4.Level))
         self.assertEqual((5, 5), (node_5.NodeValue, node_5.Level))
+        self.assertEqual((6, 4), (node_6.NodeValue, node_6.Level))
