@@ -83,6 +83,6 @@ class SimpleTree:
         nodes_to_visit = self.Root.Children.copy()
         while index < len(nodes_to_visit):
             current_node = nodes_to_visit[index]
-            current_node.Level = index + 2
+            current_node.Level = current_node.Parent.Level+1
             nodes_to_visit.extend(current_node.Children)
             index += 1
