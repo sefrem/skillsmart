@@ -40,10 +40,15 @@ class SimpleGraph:
         self.m_adjacency[v2][v1] = 0
 
     def BreadthFirstSearch(self, VFrom, VTo):
+        self.queue = []
+        self.path = []
+        for vertex in self.vertex:
+            vertex.hit = False
         vertex = self.vertex[VFrom]
         vertex.hit = True
         path = self.SearchGraph(VFrom, VTo)
-        path.insert(0, vertex)
+        if len(path) > 0:
+            path.insert(0, vertex)
 
         return path
 

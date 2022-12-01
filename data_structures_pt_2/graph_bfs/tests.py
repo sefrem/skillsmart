@@ -5,6 +5,33 @@ from graph_bfs import SimpleGraph
 
 class TestSimpleGraphBFS(unittest.TestCase):
 
+    def test_no_path(self):
+        graph = SimpleGraph(2)
+        graph.AddVertex(1)
+        graph.AddVertex(2)
+
+        graph_bfs = graph.BreadthFirstSearch(0, 1)
+
+        path = [vertex.Value for vertex in graph_bfs]
+
+        self.assertEqual([], path)
+
+    def test_edges_no_path(self):
+        graph = SimpleGraph(4)
+        graph.AddVertex(1)
+        graph.AddVertex(2)
+        graph.AddVertex(3)
+        graph.AddVertex(4)
+        graph.AddEdge(0, 1)
+        graph.AddEdge(0, 3)
+        graph.AddEdge(1, 3)
+
+        graph_bfs = graph.BreadthFirstSearch(0, 2)
+
+        path = [vertex.Value for vertex in graph_bfs]
+
+        self.assertEqual([], path)
+
     def test_bfs_graph_size_2(self):
         graph = SimpleGraph(2)
         graph.AddVertex(1)
@@ -85,3 +112,4 @@ class TestSimpleGraphBFS(unittest.TestCase):
         path = [vertex.Value for vertex in graph_bfs]
 
         self.assertEqual([0, 2, 4, 5, 6], path)
+
