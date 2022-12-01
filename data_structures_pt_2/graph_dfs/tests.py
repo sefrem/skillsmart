@@ -20,9 +20,11 @@ class TestSimpleGraphDFS(unittest.TestCase):
         graph.AddEdge(2, 5)
 
         path = graph.DepthFirstSearch(0, 5)
-
         path = [vertex.Value for vertex in path]
+        self.assertEqual([1, 3, 6], path)
 
+        path = graph.DepthFirstSearch(0, 5)
+        path = [vertex.Value for vertex in path]
         self.assertEqual([1, 3, 6], path)
 
     def test_dfs_with_one_step_back(self):

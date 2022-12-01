@@ -40,6 +40,8 @@ class SimpleGraph:
 
     def DepthFirstSearch(self, VFrom, VTo):
         self.stack = []
+        for vertex in self.vertex:
+            vertex.hit = False
         self.SearchGraph(VFrom, VTo, False)
 
         return self.stack
@@ -70,9 +72,9 @@ class SimpleGraph:
 
     def GetPrevVertexFromStack(self):
         self.stack.pop()
-        if len(self.stack) > 0:
-            for index, value in enumerate(self.vertex):
-                if value.Value == self.stack[-1].Value:
-                    return index, True
-        else:
+        if len(self.stack) == 0:
             return None, False
+
+        for index, value in enumerate(self.vertex):
+            if value.Value == self.stack[-1].Value:
+                return index, True
