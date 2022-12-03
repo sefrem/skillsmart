@@ -43,7 +43,8 @@ class SimpleGraph:
         self.queue = []
         self.path = []
         for vertex in self.vertex:
-            vertex.hit = False
+            if vertex:
+                vertex.hit = False
         vertex = self.vertex[VFrom]
         vertex.hit = True
         path = self.SearchGraph(VFrom, VTo)
@@ -55,7 +56,7 @@ class SimpleGraph:
     def SearchGraph(self, startIndex, endIndex):
         next_adj_index = self.GetNextAdjacentVertex(startIndex)
 
-        while next_adj_index:
+        while next_adj_index is not None:
 
             if next_adj_index == endIndex:
                 self.path.append(self.vertex[next_adj_index])
@@ -83,6 +84,8 @@ class SimpleGraph:
         return self.SearchGraph(next_adj_index, endIndex)
 
     def GetNextAdjacentVertex(self, index):
+        if self.m_adjacency[index][index] == 1:
+            return index
         for i, is_adj in enumerate(self.m_adjacency[index]):
             if is_adj == 1 and self.vertex[i].hit is False:
                 return i
