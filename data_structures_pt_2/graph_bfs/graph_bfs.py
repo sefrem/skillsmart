@@ -54,7 +54,9 @@ class SimpleGraph:
         return path
 
     def SearchGraph(self, startIndex, endIndex):
-        next_adj_index = self.GetNextAdjacentVertex(startIndex)
+        next_adj_index = startIndex \
+            if self.m_adjacency[startIndex][startIndex] == 1 and startIndex == endIndex \
+            else self.GetNextAdjacentVertex(startIndex)
 
         while next_adj_index is not None:
 
@@ -84,8 +86,6 @@ class SimpleGraph:
         return self.SearchGraph(next_adj_index, endIndex)
 
     def GetNextAdjacentVertex(self, index):
-        if self.m_adjacency[index][index] == 1:
-            return index
         for i, is_adj in enumerate(self.m_adjacency[index]):
             if is_adj == 1 and self.vertex[i].hit is False:
                 return i
