@@ -13,6 +13,7 @@ class SimpleGraph:
         self.vertex = [None] * size
         self.queue = []
         self.path = []
+        self.parents = {}
 
     def AddVertex(self, v):
         vertex = Vertex(v)
@@ -48,10 +49,7 @@ class SimpleGraph:
         vertex = self.vertex[VFrom]
         vertex.hit = True
         path = self.SearchGraph(VFrom, VTo)
-        if len(path) > 0:
-            path.insert(0, vertex)
-
-        return path
+        return self.CalculatePath(path)
 
     def SearchGraph(self, startIndex, endIndex):
         next_adj_index = startIndex \
@@ -59,9 +57,10 @@ class SimpleGraph:
             else self.GetNextAdjacentVertex(startIndex)
 
         while next_adj_index is not None:
+            self.parents.update({next_adj_index: startIndex})
 
             if next_adj_index == endIndex:
-                self.path.append(self.vertex[next_adj_index])
+                self.path.append(next_adj_index)
                 return self.path
 
             adj_vertex = self.vertex[next_adj_index]
@@ -74,13 +73,6 @@ class SimpleGraph:
             if len(self.queue) == 0:
                 return []
             vertex_from_queue = self.queue.pop(0)
-
-            if len(self.path):
-                index = self.GetLastVertexInPathIndex()
-                if self.m_adjacency[vertex_from_queue][index] != 1:
-                    self.path.pop()
-
-            self.path.append(self.vertex[vertex_from_queue])
             return self.SearchGraph(vertex_from_queue, endIndex)
 
         return self.SearchGraph(next_adj_index, endIndex)
@@ -95,3 +87,19 @@ class SimpleGraph:
         for i, vertex in enumerate(self.vertex):
             if vertex.Value == self.path[-1].Value:
                 return i
+
+    def CalculatePath(self, path):
+        if len(path) == 0:
+            return path
+
+        parent = self.parents[path[-1]]
+
+        if parent == path[-1]:
+            path.insert(0, parent)
+            return [self.vertex[index] for index in path]
+
+        while parent is not None:
+            path.insert(0, parent)
+            parent = self.parents.get(path[0])
+
+        return [self.vertex[index] for index in path]

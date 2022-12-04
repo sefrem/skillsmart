@@ -176,12 +176,13 @@ class TestSimpleGraphBFS(unittest.TestCase):
         self.assertEqual([1, 1], path)
 
     def test_bfs_when_vertex_has_path_to_itself(self):
-        graph = SimpleGraph(4)
+        graph = SimpleGraph(6)
         graph.AddVertex(1)
         graph.AddVertex(2)
         graph.AddVertex(3)
         graph.AddVertex(4)
-        graph.AddEdge(0, 1)
+        graph.AddVertex(5)
+        graph.AddVertex(6)
         graph.AddEdge(0, 0)
         graph.AddEdge(1, 1)
         graph.AddEdge(1, 2)
@@ -189,9 +190,72 @@ class TestSimpleGraphBFS(unittest.TestCase):
         graph.AddEdge(2, 0)
         graph.AddEdge(2, 2)
         graph.AddEdge(2, 3)
+        graph.AddEdge(2, 4)
+        graph.AddEdge(4, 4)
+        graph.AddEdge(4, 5)
 
-        graph_bfs = graph.BreadthFirstSearch(0, 3)
+        graph_bfs = graph.BreadthFirstSearch(0, 5)
 
         path = [vertex.Value for vertex in graph_bfs]
 
-        self.assertEqual([1, 2, 3, 4], path)
+        self.assertEqual([1, 3, 5, 6], path)
+
+    def test_long_path(self):
+        graph = SimpleGraph(14)
+        graph.AddVertex(0)
+        graph.AddVertex(1)
+        graph.AddVertex(2)
+        graph.AddVertex(3)
+        graph.AddVertex(4)
+        graph.AddVertex(5)
+        graph.AddVertex(6)
+        graph.AddVertex(7)
+        graph.AddVertex(8)
+        graph.AddVertex(9)
+        graph.AddVertex(10)
+        graph.AddVertex(11)
+        graph.AddVertex(12)
+        graph.AddVertex(13)
+        graph.AddEdge(0, 1)
+        graph.AddEdge(0, 2)
+        graph.AddEdge(2, 2)
+        graph.AddEdge(1, 4)
+        graph.AddEdge(2, 4)
+        graph.AddEdge(2, 3)
+        graph.AddEdge(3, 5)
+        graph.AddEdge(5, 6)
+        graph.AddEdge(5, 7)
+        graph.AddEdge(6, 9)
+        graph.AddEdge(7, 8)
+        graph.AddEdge(8, 10)
+        graph.AddEdge(9, 10)
+        graph.AddEdge(10, 11)
+        graph.AddEdge(10, 12)
+        graph.AddEdge(11, 12)
+        graph.AddEdge(11, 13)
+
+        graph_bfs = graph.BreadthFirstSearch(0, 13)
+
+        path = [vertex.Value for vertex in graph_bfs]
+
+        self.assertEqual([0, 2, 3, 5, 6, 9, 10, 11, 13], path)
+
+    def test_bfs_with_path_splitting(self):
+        graph = SimpleGraph(6)
+        graph.AddVertex(0)
+        graph.AddVertex(1)
+        graph.AddVertex(2)
+        graph.AddVertex(3)
+        graph.AddVertex(4)
+        graph.AddVertex(5)
+        graph.AddEdge(0, 1)
+        graph.AddEdge(0, 2)
+        graph.AddEdge(1, 3)
+        graph.AddEdge(2, 4)
+        graph.AddEdge(4, 5)
+
+        graph_bfs = graph.BreadthFirstSearch(0, 5)
+
+        path = [vertex.Value for vertex in graph_bfs]
+
+        self.assertEqual([0, 2, 4, 5], path)
