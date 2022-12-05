@@ -173,7 +173,7 @@ class TestSimpleGraphBFS(unittest.TestCase):
 
         path = [vertex.Value for vertex in graph_bfs]
 
-        self.assertEqual([1, 1], path)
+        self.assertEqual([1], path)
 
     def test_bfs_when_vertex_has_path_to_itself(self):
         graph = SimpleGraph(6)

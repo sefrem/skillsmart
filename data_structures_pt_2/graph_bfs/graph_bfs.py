@@ -92,10 +92,7 @@ class SimpleGraph:
         if len(path) == 0:
             return path
 
-        parent = self.parents[path[-1]]
-
-        if parent == path[-1]:
-            path.insert(0, parent)
+        if path[-1] == self.parents[path[-1]]:
             return [self.vertex[index] for index in path]
 
         for _ in self.parents.items():
