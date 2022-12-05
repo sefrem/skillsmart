@@ -98,8 +98,10 @@ class SimpleGraph:
             path.insert(0, parent)
             return [self.vertex[index] for index in path]
 
-        while parent is not None:
-            path.insert(0, parent)
+        for _ in self.parents.items():
             parent = self.parents.get(path[0])
+            if parent is None:
+                break
+            path.insert(0, parent)
 
         return [self.vertex[index] for index in path]
