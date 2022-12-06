@@ -262,3 +262,28 @@ class TestSimpleGraphBFS(unittest.TestCase):
         path = [vertex.Value for vertex in graph_bfs]
 
         self.assertEqual([0, 2, 4, 5], path)
+
+    def test_search_in_graph_from_pic(self):
+        graph = SimpleGraph(6)
+        graph.AddVertex("A")
+        graph.AddVertex("B")
+        graph.AddVertex("C")
+        graph.AddVertex("D")
+        graph.AddVertex("E")
+        graph.AddVertex("F")
+        graph.AddEdge(0, 1)
+        graph.AddEdge(0, 2)
+        graph.AddEdge(0, 3)
+        graph.AddEdge(3, 1)
+        graph.AddEdge(3, 2)
+        graph.AddEdge(3, 3)
+        graph.AddEdge(1, 4)
+        graph.AddEdge(3, 4)
+        graph.AddEdge(4, 5)
+
+        graph_bfs = graph.BreadthFirstSearch(3, 0)
+
+        path = [vertex.Value for vertex in graph_bfs]
+
+        self.assertEqual(2, len(graph_bfs))
+        self.assertEqual(['D', 'A'], path)
