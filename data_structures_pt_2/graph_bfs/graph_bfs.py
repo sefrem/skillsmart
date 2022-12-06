@@ -43,6 +43,7 @@ class SimpleGraph:
     def BreadthFirstSearch(self, VFrom, VTo):
         self.queue = []
         self.path = []
+        self.parents = {}
         for vertex in self.vertex:
             if vertex:
                 vertex.hit = False

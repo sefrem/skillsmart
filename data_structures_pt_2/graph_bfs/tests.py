@@ -289,6 +289,8 @@ class TestSimpleGraphBFS(unittest.TestCase):
         graph.AddEdge(4, 5)
         graph.AddEdge(5, 4)
 
+        graph.BreadthFirstSearch(0, 4)
+
         graph_bfs = graph.BreadthFirstSearch(3, 0)
 
         path = [vertex.Value for vertex in graph_bfs]
