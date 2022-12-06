@@ -55,6 +55,7 @@ class TestSimpleGraphBFS(unittest.TestCase):
 
         path = [vertex.Value for vertex in graph_bfs]
 
+        self.assertEqual(2, len(graph_bfs))
         self.assertEqual([1, 2], path)
 
     def test_bfs_graph_size_3(self):
@@ -173,6 +174,7 @@ class TestSimpleGraphBFS(unittest.TestCase):
 
         path = [vertex.Value for vertex in graph_bfs]
 
+        self.assertEqual(1, len(graph_bfs))
         self.assertEqual([1], path)
 
     def test_bfs_when_vertex_has_path_to_itself(self):
@@ -198,6 +200,7 @@ class TestSimpleGraphBFS(unittest.TestCase):
 
         path = [vertex.Value for vertex in graph_bfs]
 
+        self.assertEqual(4, len(graph_bfs))
         self.assertEqual([1, 3, 5, 6], path)
 
     def test_long_path(self):
