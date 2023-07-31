@@ -4,13 +4,11 @@ let rec pow = function
     | (s, n) -> s + pow(s, n-1)
 
 // 17.2
-let isIthChar (s: string, n, c) = s.[n] = c
+let rec isIthChar (s: string, n, c) = s.[n] = c
 
 // 17.3
-let occFromIth (s, n, c) =
-    let rec loop = function
-        | (str, i, count) when String.length str = i -> count
-        | (str, i, count) when i >= n && str.[i] = c -> loop(str, i+1, count+1)
-        | (str, i, count) -> loop(str, i+1, count)
+let rec occFromIth = function
+    | (s, n, c) when n < String.length s && s.[n] = c -> 1 + occFromIth(s, n+1, c)
+    | (s, n, c) when n < String.length s -> occFromIth(s, n+1, c)
+    | _ -> 0
     
-    loop (s, n, 0)
