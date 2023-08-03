@@ -1,7 +1,7 @@
 // 17.1
 let rec pow = function
-    | (s: string, 0) -> s
-    | (s: string, 1) -> s
+    | (_, 0) -> ""
+    | (s, 1) -> s
     | (s, n) -> s + pow(s, n-1)
 
 // 17.2
