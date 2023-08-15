@@ -5,7 +5,7 @@ let rec iter = function
 
 let rec iterEven = function
             | a, n, start when List.length a < n && start % 2 = 0 -> iterEven(start :: a, n, start+2)
-            | a,_, _ -> a
+            | a, _, _ -> a
 
 // 34.1
 let rec upto = function        
