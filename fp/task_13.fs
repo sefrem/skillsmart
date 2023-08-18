@@ -23,6 +23,7 @@ let rec split = function
 
 // 39.5
 let rec zip = function
+    | list1, list2 when List.length list1 <> List.length list2 -> failwith "Lists are not of equal length"
     | head1 :: tail1, head2 :: tail2 -> (head1, head2) :: zip(tail1, tail2)                            
     | _ -> []
 
