@@ -10,9 +10,11 @@ let rec del_even = function
     | _ -> []
 
 // 39.3
-let rec multiplicity = function
-    | (x, head :: tail) -> if head = x then 1 + multiplicity(x, tail) else multiplicity(x, tail)
-    | (_, []) -> 0
+let rec multiplicity x xs = 
+    match (x, xs) with
+        | x, head :: tail when head = x -> 1 + multiplicity x tail 
+        | x, _ :: tail -> multiplicity x tail
+        | (_, []) -> 0
 
 // 39.4
 let rec split = function
@@ -22,7 +24,8 @@ let rec split = function
     | [] -> [], []
 
 // 39.5
-let rec zip = function
+let rec zip (xs1,xs2) = 
+    match (xs1, xs2) with
     | list1, list2 when List.length list1 <> List.length list2 -> failwith "Lists are not of equal length"
     | head1 :: tail1, head2 :: tail2 -> (head1, head2) :: zip(tail1, tail2)                            
     | _ -> []
