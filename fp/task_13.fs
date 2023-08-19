@@ -1,8 +1,7 @@
 // 39.1
 let rec rmodd = function
-    | [] -> []
-    | [x] -> [x]
     | _ :: (head :: tail) -> head :: rmodd tail
+    | _ -> []
 
 // 39.2
 let rec del_even = function
