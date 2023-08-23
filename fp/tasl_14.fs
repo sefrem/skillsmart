@@ -1,12 +1,3 @@
-/40.1. Напишите функцию sum(p, xs), где p -- предикат int -> bool, и xs -- список целых. 
-//Функция возвращает сумму тех элементов xs, для которых предикат истинен.
-
-let rec sum (p, xs) = 
-    match (p, xs) with
-    | (p, head :: tail) -> if p head then head + sum (p, tail) else sum (p, tail)
-    | (_, []) -> 0
-
-let testP a = a % 2 = 0
 
 let rec binary_search (x, list: list<int>, startIndex, endIndex, isInsert) = 
     let index = startIndex + (endIndex - startIndex ) / 2
@@ -23,9 +14,6 @@ let rec find_first (list: list<int>, value, index) =
     | () when list[index] = value -> find_first (list, value, index-1)
     | () -> index
 
-// 40.2.1. Напишите функцию count: int list * int -> int, 
-// которая подсчитывает количество вхождений числа в список.
-
 let countFromIndex (listA: list<int>, startIndex) =
     let startValue = listA[startIndex]
     let rec iter (index, acc) = 
@@ -36,6 +24,13 @@ let countFromIndex (listA: list<int>, startIndex) =
     
     iter(startIndex, 0)
 
+// 40.1
+let rec sum (p, xs) = 
+    match (p, xs) with
+    | (p, head :: tail) -> if p head then head + sum (p, tail) else sum (p, tail)
+    | (_, []) -> 0
+
+// 40.2.1
 let rec count (xs, n) = 
     let index = binary_search(n, xs, 0,List.length xs - 1, false)
     if index = -1 then 0 else
@@ -43,20 +38,13 @@ let rec count (xs, n) =
     
     countFromIndex(xs, start)
 
-
-//40.2.2. Напишите функцию insert: int list * int -> int list, которая добавляет новый элемент в список.
+// 40.2.2
 let rec insert (xs, n) = 
     let insertIndex = binary_search(n, xs, 0, List.length xs - 1, true)
     xs |> List.insertAt insertIndex n 
 
-let test_list = [3; 3; 4; 5; 6; 7]
-let test_list_2 = [1; 2; 3; 5]
-
-//40.2.3. Напишите функцию intersect: int list * int list -> int list, 
-//которая находит общие элементы в обоих списках, включая повторяющиеся.
-
+// 40.2.3
 let rec intersect (xs1, xs2) =
-
     let rec iter (index, result) = 
         if index >= List.length xs1 then result else
         let q2 = count(xs2, xs1[index])
@@ -69,34 +57,45 @@ let rec intersect (xs1, xs2) =
 
     iter (0, [])
 
-//40.2.4. Напишите функцию plus: int list * int list -> int list, 
-//которая формирует список, объединяющий все элементы входных списков, включая повторяющиеся.
-
+// 40.2.4
 let rec plus (xs1: list<int>, xs2: list<int>) =
-    // let rec iter (index, result) = 
-    //     if index >= List.length xs1 then result else
-    //     let q2 = count(xs2, xs1[index])
-    //     let q1 = countFromIndex(xs1, index)
-
-    //     match () with
-    //     | () when index > List.length xs1 - 1 -> result
-    //     | () when q2 > 0 -> iter (index+q1, result @ List.init (q2+q1) (fun _ -> xs1[index]) )
-    //     | () -> iter (index+1, result @ List.init (q1) (fun _ -> xs1[index]))
     let lastIndex1 =  List.length xs1-1
     let lastIndex2 =  List.length xs2-1
     
     let rec iter (index1, index2, result) =   
-        printfn "%A" (result, index1, index2)
         match () with
-        // | () when (lastIndex1 = index1 && lastIndex2 >= index2) -> iter(index1, index2+1, result @ [xs2[index2]])
-        // | () when (lastIndex2 = index2 && lastIndex1 >= index1) -> iter(index1+1, index2, result @ [xs1[index1]])
-        | () when xs1[index1] <= xs2[index2] || (lastIndex2 = index2 && lastIndex1 >= index1) -> iter(index1+1, index2, result @ [xs1[index1]])
-        | () when xs1[index1] > xs2[index2] || (lastIndex1 = index1 && lastIndex2 >= index2) -> iter(index1, index2+1, result @ [xs2[index2]])
-        | () when lastIndex1 <= index1 && lastIndex2 <= index2 -> result
-        
+        | () when (lastIndex2 < index2 && lastIndex1 >= index1) || (index1 <= lastIndex1 && xs1[index1] <= xs2[index2]) -> iter(index1+1, index2, result @ [xs1[index1]])
+        | () when (lastIndex1 < index1 && lastIndex2 >= index2) || (index2 <= lastIndex2 && xs1[index1] > xs2[index2] )-> iter(index1, index2+1, result @ [xs2[index2]])
+        | () when lastIndex1 < index1 && lastIndex2 < index2 -> result
         | () -> result
-
 
     iter (0, 0, [])
 
-printfn "%A" (plus (test_list, test_list_2))
+// 40.2.5
+let rec minus (xs1: list<int>, xs2: list<int>) = 
+    let rec iter(index, result) = 
+        match () with
+        | () when index = List.length xs1 -> result
+        | () when binary_search(xs1[index], xs2, 0, List.length xs2-1, false) <> -1 -> iter(index+1, result)
+        | () -> iter(index+1, result @ [xs1[index]])
+    
+    iter(0, [])
+
+// 40.3.1
+let rec smallest (xs: list<int>) = 
+    let rec iter(index, smallest) = 
+        match () with
+        | () when index = List.length xs -> Some smallest
+        | () when xs[index] < smallest -> iter(index+1, xs[index])
+        | () -> iter(index+1, smallest)
+    
+    iter(0, xs[0])
+
+// 40.3.2
+let rec delete (n: int, xs: list<int>) = xs
+
+// 40.3.3
+let rec sort (xs: list<int>) = xs
+
+// 40.4
+let rec revrev (xs: list<list<int>>) = xs
