@@ -92,10 +92,22 @@ let rec smallest (xs: list<int>) =
     iter(0, xs[0])
 
 // 40.3.2
-let rec delete (n: int, xs: list<int>) = xs
+let rec delete (n: int, xs: list<int>) = 
+    let rec iter(index, result, isRemoved) = 
+        match () with
+        | () when index = List.length xs -> result
+        | () when xs[index] <> n -> iter(index+1, result@[xs[index]], isRemoved)
+        | () when xs[index] = n -> if isRemoved then iter(index+1, result@[xs[index]], isRemoved) else iter(index+1, result, true)
+        | () -> result
+
+    iter(0, [], false)
 
 // 40.3.3
-let rec sort (xs: list<int>) = xs
+let rec sort (xs) = 
+    match () with
+    | () when List.length xs = 0 -> [] 
+    | () -> let smallest = Option.get(smallest(xs))
+            smallest :: sort(delete(smallest, xs)) 
 
 // 40.4
-let rec revrev (xs: list<list<int>>) = xs
+let rec revrev (xs: list<list<int>>) = xs |> List.map (fun x -> List.rev x) |> List.rev
