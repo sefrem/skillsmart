@@ -58,7 +58,7 @@ let rec intersect (xs1, xs2) =
     iter (0, [])
 
 // 40.2.4
-let rec plus (xs1: list<int>, xs2: list<int>) =
+let rec plus (xs1, xs2) =
     let lastIndex1 =  List.length xs1-1
     let lastIndex2 =  List.length xs2-1
     
@@ -72,7 +72,7 @@ let rec plus (xs1: list<int>, xs2: list<int>) =
     iter (0, 0, [])
 
 // 40.2.5
-let rec minus (xs1: list<int>, xs2: list<int>) = 
+let rec minus (xs1, xs2) = 
     let rec iter(index, result) = 
         match () with
         | () when index = List.length xs1 -> result
@@ -82,7 +82,7 @@ let rec minus (xs1: list<int>, xs2: list<int>) =
     iter(0, [])
 
 // 40.3.1
-let rec smallest (xs: list<int>) = 
+let rec smallest (xs) = 
     let rec iter(index, smallest) = 
         match () with
         | () when index = List.length xs -> Some smallest
@@ -92,7 +92,7 @@ let rec smallest (xs: list<int>) =
     iter(0, xs[0])
 
 // 40.3.2
-let rec delete (n: int, xs: list<int>) = 
+let rec delete (n, xs) = 
     let rec iter(index, result, isRemoved) = 
         match () with
         | () when index = List.length xs -> result
@@ -110,4 +110,4 @@ let rec sort (xs) =
             smallest :: sort(delete(smallest, xs)) 
 
 // 40.4
-let rec revrev (xs: list<list<int>>) = xs |> List.map (fun x -> List.rev x) |> List.rev
+let rec revrev (xs) = xs |> List.map (fun x -> List.rev x) |> List.rev
