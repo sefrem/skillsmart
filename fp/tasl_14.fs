@@ -41,7 +41,13 @@ let rec count (xs, n) =
 // 40.2.2
 let rec insert (xs, n) = 
     let insertIndex = binary_search(n, xs, 0, List.length xs - 1, true)
-    xs |> List.insertAt insertIndex n 
+    let rec insertValue value index list = 
+        match index, list with
+        | 0, list -> value::list
+        | index, head::tail -> head::insertValue value (index-1) tail
+        | _ -> list
+
+    insertValue n insertIndex xs
 
 // 40.2.3
 let rec intersect (xs1, xs2) =
