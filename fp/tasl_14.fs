@@ -24,6 +24,12 @@ let countFromIndex (listA: list<int>, startIndex) =
     
     iter(startIndex, 0)
 
+let rec search(xs: list<int>, x, index) =
+    match (xs, x, index) with
+    | (xs, x, index) when xs.[index] = x -> index
+    | (xs, x, index) when index >= List.length xs || xs.[index] > x -> -1
+    | (xs, x, index) -> search(xs, x, index+1)
+
 // 40.1
 let rec sum (p, xs) = 
     match (p, xs) with
@@ -78,14 +84,15 @@ let rec plus (xs1, xs2) =
     iter (0, 0, [])
 
 // 40.2.5
-let rec minus (xs1, xs2) = 
-    let rec iter(index, result) = 
-        match () with
-        | () when index = List.length xs1 -> result
-        | () when binary_search(xs1.[index], xs2, 0, List.length xs2-1, false) <> -1 -> iter(index+1, result)
-        | () -> iter(index+1, result @ [xs1.[index]])
-    
-    iter(0, [])
+let rec minus(xs1, xs2) =
+    let rec iter(list, result, startIndexInList2) =
+        match (list, result, startIndexInList2) with
+        | ([], _, _) -> result
+        | (head::tail, result, _) when List.length tail = 0 && search(xs2, head, startIndexInList2) = -1 -> result @ [head] 
+        | (head::tail, result, _) when search(xs2, head, startIndexInList2) <> -1 -> iter(tail, result, search(xs2, head, startIndexInList2)+1)
+        | (head::tail, result, startIndexInList2) -> iter(tail, result @ [head], startIndexInList2)
+
+    iter(xs1, [], 0)
 
 // 40.3.1
 let rec smallest (xs) = 
