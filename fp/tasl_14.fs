@@ -58,7 +58,7 @@ let rec intersect (xs1, xs2) =
 
         match () with
         | () when index > List.length xs1 - 1 -> result
-        | () when q2 > 0 -> iter (index+q1, result @ List.init (q2+q1) (fun _ -> xs1.[index]))
+        | () when q2 > 0 -> iter (index+q1, result @ List.init (if q2 < q1 then q2 else q1) (fun _ -> xs1.[index]))
         | () -> iter (index+1, result)
 
     iter (0, [])
