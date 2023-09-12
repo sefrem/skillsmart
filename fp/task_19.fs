@@ -16,3 +16,10 @@ let rec bigList n =
         if x = 0 then acc
         else f (x-1) (1::acc)
     f n []
+
+let rec bigList1 n id =
+    let rec f n acc =
+        match n with
+        | n when n > 0 -> f(n-1) (fun res -> acc(1::res))
+        | 0 -> acc []
+    f n id
