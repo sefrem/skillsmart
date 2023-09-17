@@ -1,5 +1,8 @@
+let get_even = function
+    | 0 -> 2
+    | x -> (x+1)*2
 // 49.5.1
-let even_seq = Seq.initInfinite (fun i -> i*2)
+let seq_ev = Seq.initInfinite get_even
 
 let rec factorial = function
     | 0 -> 1
