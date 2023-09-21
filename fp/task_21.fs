@@ -1,3 +1,6 @@
+let rec factorial = function
+    | 0 -> 1
+    | x -> x * factorial(x-1) 
 // 50.2.1
 let fac_seq = seq {
         for i in 0. ..infinity do
