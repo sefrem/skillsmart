@@ -67,18 +67,11 @@ function getOutboundCampaignCallInfo(snap: VoiceAgentStateSnapshot): CallTypeSpe
     };
 }
 
-// Цикломатическая сложность основного метода снижена в 5 раз.
+// Цикломатическая сложность основного метода снижена в 5 раз до 4
 // Использованные приемы:
 //   - Избавление от if/else
 //   - В JS нет полиморфизма, поэтому я создавал новые функции с разными именами, если исходная делала слишком много
 
-// getOutboundInfo - 5
-// getOutboundCampaignCallInfoWithPreview - 1
-// getOutboundCampaignCallInfo - 1
-// constructCallInfoWithoutContact - 1
-// constructCallInfoWithContact - 1
-// getContactPhone - 2
-// checkIfCanRestore - 1
 
 const outboundInfo = checkIfCanRestore(snap.conferenceStatus.conferenceType) ? getOutboundInfo({
     outboundCallInfo: snap.outboundCallInfo,
