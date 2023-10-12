@@ -253,48 +253,115 @@ class VoiceInteractionOld {
 // Использованные методы:
 //      - Избавление от if/else, цепочек вложенных if
 //      - Методы явно возвращают значения (убран тип void)
+//      - Убрано мутирование данных, добавлена иммутабельность
+
+// Выводы.
+// Это метод - один из самых проблемных во всем нашем фронтенде и точно с наибольшей цикломатической сложностью.
+// Огромное количество времени мы пытались найти и чинить в нем баги.
+// Логика спонтанно писалась много лет разными разработчиками, никакой документации нет, как он должен работать никто не знает.
+// Все это осложняется тем, что баги случайно возникают в зависимости от последовательности сообщений в веб-сокетах, и это практически
+// не воспроизвести локально, приходится дебажить вслепую, смотря на логи клиента.
+// Конкретно этот метод занимается обработкой и обновлением интеракции (состояния текущей сессии клиента) в зависимости от полученных
+// сообщений по веб-сокетам, и пушит нужные события в очередь исполнения.
+// В данном случае я предпринял попытку представить как можно было бы его отрефакторить. В первую очередь я убрал вложенный условные цепочки,
+// также сделал используемый объект interaction иммутабельным, потому что у нас бывали баги из-за того, что он меняется после того, как был положен в очередь
+// для обработки.
+// Получилось единообразнее и полегче для понимания в общем что здесь происходит, но все равно недостаточно,
+// тут хочется какую-то стейт-машину, которая в зависимости от полученного сообщения будет
+// переводит одно состояние в следующее и на это запускаться какие-то сайд-эффекты (пополняться очередь, например).
+
 
 
 class VoiceInteractionHandler {
 
-    private checkIfInteractionFromPrevEvent(interaction: VoiceInteraction, contactSessionId: string, actions: Action[]): VoiceInteraction {
+    private handleChannelStatusForNewProtocol(
+        msg: WsVoiceChannelStatusMsgPayload,
+        interaction: VoiceInteraction,
+        currentUserId: number
+    ): Observable<Action> {
+        const directionCallType = this.voiceInteractionService.getCallTypeByDirection(msg.direction);
+        const interactionCallType = VoiceInteractionService.getCallType(interaction);
+        let actions: Action[] = [];
+
+        this.handleContactFininishedCallFailure(msg);
+        this.handleTransferDisconnectedDuringTransfer(msg, currentUserId);
+
+        [interaction, actions] = this.checkIfInteractionFromPrevEvent(interaction, msg.context.contactSessionId, actions);
+
+        if (interaction == null && STARTING_STATUSES.indexOf(this.voiceInteractionService.getInternalCallStatus(msg.status, null)) === -1) {
+            return EMPTY;
+        }
+
+        [interaction, actions] =
+            interaction == null
+                ? this.updateEmptyInteraction({ interaction, msg, prevActions: actions, directionCallType })
+                : this.updateInteraction(interaction, interactionCallType, directionCallType);
+        interaction = this.updateInteractionWithConferenceId(interaction, msg);
+        [interaction, actions] = this.handlePaymentMessage(msg, interaction, actions);
+        interaction = this.updateHelperQueue(msg, interaction);
+        interaction = this.patchContact('context.client', msg, interaction);
+        interaction = this.updateExternalHelper(msg, interaction);
+        interaction = this.updateNewProtocolCallInfo(msg, interaction, currentUserId);
+        interaction = this.checkIfPureConferenceState(msg, interaction);
+        interaction = this.updateInteractionIfActivityContactTypeExists(msg, interaction, directionCallType);
+        interaction = this.updateInteractionIfQueueExists(msg, interaction);
+        [interaction, actions] = this.updateInteractionIfCampaignExists(msg, interaction, actions);
+        [interaction, actions] = this.handleReceiveWarmTransfer(msg, interaction, actions);
+        [interaction, actions] = this.handleNewConference({ msg, interaction, prevActions: actions, currentUserId });
+        [interaction, actions] = this.handleConferenceDialing({ msg, interaction, prevActions: actions, currentUserId });
+        [interaction, actions] = this.handleConferenceFinished({ msg, interaction, prevActions: actions, currentUserId });
+        actions = this.updActionsIfCallStatusExists(msg, interaction, actions);
+        actions = this.updActionsIfEmptyCallStatus(interaction, actions);
+
+        return of(...actions);
+    }
+
+    private checkIfInteractionFromPrevEvent(
+        interaction: VoiceInteraction,
+        contactSessionId: string,
+        prevActions: Action[]
+    ): [VoiceInteraction, Action[]] {
+        const actions = [...prevActions];
+        interaction = LODASH.cloneDeep(interaction);
+
         if (interaction != null && contactSessionId !== interaction.newProtocolCallInfo.contactSessionId) {
-            actions.push(VoiceInteractionsActions.removeInteraction({uuid: interaction.uuid}));
+            actions.push(VoiceInteractionsActions.removeInteraction({ uuid: interaction.uuid }));
             interaction = null;
         }
-        return interaction;
+        return [interaction, actions];
     }
 
     private updateEmptyInteraction({
                                        interaction,
                                        msg,
-                                       actions,
+                                       prevActions,
                                        directionCallType,
                                    }: {
         interaction: VoiceInteraction;
         msg: WsVoiceChannelStatusMsgPayload;
-        actions: Action[];
+        prevActions: Action[];
         directionCallType: CallType;
-    }): VoiceInteraction {
+    }): [VoiceInteraction, Action[]] {
+        const actions = [...prevActions];
         interaction = getDefaultNewProtocolInteraction();
         interaction.callType = VoiceInteractionService.getCallTypeByActivityType(msg.context['activityContactType']) ?? directionCallType;
 
         actions.push(
-            VoiceInteractionsActions.newInteraction({interaction, conferenceStatus: msg}),
-            LoggerActions.logMetric({metric: FrontMetric.callAssigned()})
+            VoiceInteractionsActions.newInteraction({ interaction, conferenceStatus: msg }),
+            LoggerActions.logMetric({ metric: FrontMetric.callAssigned() })
         );
-        this.logger.logInfo(LogTag.VOICE_INTERACTION, 'New interaction:', {conferenceId: LODASH.get(msg, 'context.conferenceId')});
-        return interaction;
+        this.logger.logInfo(LogTag.VOICE_INTERACTION, 'New interaction:', { conferenceId: LODASH.get(msg, 'context.conferenceId') });
+        return [interaction, actions];
     }
 
-    private updateInteraction(interaction: VoiceInteraction, interactionCallType, directionCallType): VoiceInteraction {
+    private updateInteraction(interaction: VoiceInteraction, interactionCallType, directionCallType): [VoiceInteraction, Action[]] {
         interaction = LODASH.cloneDeep(interaction);
         interaction.callType = interactionCallType || directionCallType;
 
-        return interaction;
+        return [interaction, []];
     }
 
-    private updateInteractionWIthConferenceId(interaction: VoiceInteraction, msg: WsVoiceChannelStatusMsgPayload): VoiceInteraction {
+    private updateInteractionWithConferenceId(interaction: VoiceInteraction, msg: WsVoiceChannelStatusMsgPayload): VoiceInteraction {
         return {
             ...interaction,
             newProtocolCallInfo: {
@@ -305,24 +372,28 @@ class VoiceInteractionHandler {
         };
     }
 
-    private handlePaymentMessage(msg: WsVoiceChannelStatusMsgPayload, interaction: VoiceInteraction, actions: Action[]): VoiceInteraction {
+    private handlePaymentMessage(
+        msg: WsVoiceChannelStatusMsgPayload,
+        interaction: VoiceInteraction,
+        prevActions: Action[]
+    ): [VoiceInteraction, Action[]] {
+        const paymentAvailable = LODASH.get(msg, 'context.paymentInfo.paymentAvailable');
+        const actions = [...prevActions];
+        interaction = LODASH.cloneDeep(interaction);
+
         if (msg.context['paymentInfo']) {
             this.logger.logInfo(LogTag.VOICE_INTERACTION, 'Payment package present', msg.context['paymentInfo']);
-            const paymentAvailable = LODASH.get(msg, 'context.paymentInfo.paymentAvailable');
 
-            interaction = {
-                ...interaction,
-                paymentInfo: {
-                    paymentAvailable,
-                    paymentMultiple: LODASH.get(msg, 'context.paymentInfo.paymentMultiple'),
-                },
+            interaction.paymentInfo = {
+                paymentAvailable,
+                paymentMultiple: LODASH.get(msg, 'context.paymentInfo.paymentMultiple'),
             };
         }
 
         if (msg.context['paymentInfo'] && paymentAvailable) {
             actions.push(PaymentActions.loadPaymentStatus({ conferenceId: interaction.newProtocolCallInfo.conferenceId }));
         }
-        return interaction;
+        return [interaction, actions];
     }
 
     private updateNewProtocolCallInfo(msg: WsVoiceChannelStatusMsgPayload, interaction: VoiceInteraction, currentUserId: number): VoiceInteraction {
@@ -335,6 +406,7 @@ class VoiceInteractionHandler {
         interaction: VoiceInteraction,
         directionCallType: CallType
     ): VoiceInteraction {
+        interaction = LODASH.cloneDeep(interaction);
         if (msg.context['activityContactType'] != null) {
             const activityContactType = msg.context['activityContactType'] as ActivityContactType;
             const activityCallType = VoiceInteractionService.getCallTypeByActivityType(activityContactType);
@@ -353,6 +425,8 @@ class VoiceInteractionHandler {
     }
 
     private updateInteractionIfQueueExists(msg: WsVoiceChannelStatusMsgPayload, interaction: VoiceInteraction): VoiceInteraction {
+        interaction = LODASH.cloneDeep(interaction);
+
         if (msg.context['activityContactType'] != null && msg.context['queue'] != null) {
             interaction.newProtocolCallInfo = {
                 ...interaction.newProtocolCallInfo,
@@ -371,8 +445,14 @@ class VoiceInteractionHandler {
         return interaction;
     }
 
-    private updateInteractionIfCampaignExists(msg: WsVoiceChannelStatusMsgPayload, interaction: VoiceInteraction, actions: Action[]): VoiceInteraction {
+    private updateInteractionIfCampaignExists(
+        msg: WsVoiceChannelStatusMsgPayload,
+        interaction: VoiceInteraction,
+        prevActions: Action[]
+    ): [VoiceInteraction, Action[]] {
         const activityCallType = VoiceInteractionService.getCallTypeByActivityType(msg.context['activityContactType']);
+        const actions = [...prevActions];
+        interaction = LODASH.cloneDeep(interaction);
 
         if (
             msg.context['activityContactType'] != null &&
@@ -397,7 +477,7 @@ class VoiceInteractionHandler {
             );
         }
 
-        return interaction;
+        return [interaction, actions];
     }
 
     private checkIfPureConferenceState(msg: WsVoiceChannelStatusMsgPayload, interaction: VoiceInteraction): VoiceInteraction {
@@ -411,11 +491,20 @@ class VoiceInteractionHandler {
         }
     }
 
-    private handleReceiveWarmTransfer(msg: WsVoiceChannelStatusMsgPayload, interaction: VoiceInteraction, actions: Action[]): VoiceInteraction {
+    private handleReceiveWarmTransfer(
+        msg: WsVoiceChannelStatusMsgPayload,
+        interaction: VoiceInteraction,
+        prevActions: Action[]
+    ): [VoiceInteraction, Action[]] {
+        const actions = [...prevActions];
+        interaction = LODASH.cloneDeep(interaction);
+
         if (msg.status !== ConferenceProgressStatusWs.TRANSFER_OFFERED) {
-            return interaction;
+            return [interaction, actions];
         }
         const transferPayload = (msg as unknown as TransferOfferedWs).context;
+        // Transfer offered has information about conference master and client
+
         interaction.newProtocolCallInfo = {
             ...interaction.newProtocolCallInfo,
             conferenceType: ConferenceType.HELPER,
@@ -433,71 +522,82 @@ class VoiceInteractionHandler {
             })
         );
 
-        return interaction;
+        return [interaction, actions];
     }
 
     private handleNewConference({
                                     msg,
                                     interaction,
-                                    actions,
+                                    prevActions,
                                     currentUserId,
                                 }: {
         msg: WsVoiceChannelStatusMsgPayload;
         interaction: VoiceInteraction;
-        actions: Action[];
+        prevActions: Action[];
         currentUserId: number;
-    }): VoiceInteraction {
+    }): [VoiceInteraction, Action[]] {
+        const actions = [...prevActions];
+        interaction = LODASH.cloneDeep(interaction);
+
         if (msg.status !== ConferenceProgressStatusWs.NEW_MASTER || interaction.newProtocolCallInfo.conferenceType !== ConferenceType.HELPER) {
-            return interaction;
+            return [interaction, actions];
         }
         const masterAgentId = LODASH.get(msg, 'context.agent.id', null);
         interaction.newProtocolCallInfo.conferenceType = masterAgentId === currentUserId ? ConferenceType.SINGLE : ConferenceType.HELPER;
 
+        // if we got transfered a call with payment, get the last state updated initial agent
         if (masterAgentId === currentUserId && interaction.paymentInfo.paymentAvailable) {
-            actions.push(PaymentActions.loadPaymentStatus({conferenceId: interaction.newProtocolCallInfo.conferenceId}));
+            actions.push(PaymentActions.loadPaymentStatus({ conferenceId: interaction.newProtocolCallInfo.conferenceId }));
         }
 
-        return interaction;
+        return [interaction, actions];
     }
 
     private handleConferenceDialing({
                                         msg,
                                         interaction,
-                                        actions,
+                                        prevActions,
                                         currentUserId,
                                     }: {
         msg: WsVoiceChannelStatusMsgPayload;
         interaction: VoiceInteraction;
-        actions: Action[];
+        prevActions: Action[];
         currentUserId: number;
-    }): VoiceInteraction {
+    }): [VoiceInteraction, Action[]] {
+        const actions = [...prevActions];
+        interaction = LODASH.cloneDeep(interaction);
+
         if (msg.status !== ConferenceProgressStatusWs.DIALING || msg.context.agent?.id !== currentUserId) {
-            return interaction;
+            return [interaction, actions];
         }
-        const {id, login, profile, groups} = msg.context.agent;
+
+        const { id, login, profile, groups } = msg.context.agent;
         interaction = this.updateCallScriptOnDialing(interaction, msg.context.callScript);
         actions.push(
             CrmDataBridgeActions.updateCrmDataBridgeAgentOnDialing({
-                agent: {id, login, profile, groups},
+                agent: { id, login, profile, groups },
                 interaction,
             })
         );
-        return interaction;
+        return [interaction, actions];
     }
 
     private handleConferenceFinished({
                                          msg,
                                          interaction,
-                                         actions,
+                                         prevActions,
                                          currentUserId,
                                      }: {
         msg: WsVoiceChannelStatusMsgPayload;
         interaction: VoiceInteraction;
-        actions: Action[];
+        prevActions: Action[];
         currentUserId: number;
-    }): VoiceInteraction {
+    }): [VoiceInteraction, Action[]] {
+        const actions = [...prevActions];
+        interaction = LODASH.cloneDeep(interaction);
+
         if (msg.status !== ConferenceProgressStatusWs.FINISHED || !msg.context.agent) {
-            return interaction;
+            return [interaction, actions];
         }
         if (msg.context.reason === CallEndReason.TRANSFER_CONFIRM) {
             actions.push(VoiceInteractionsActions.callFinishedByTransferConfirm());
@@ -507,14 +607,14 @@ class VoiceInteractionHandler {
             msg.context.agent.id !== currentUserId &&
             interaction.callType === CallType.OUTBOUND_CAMPAIGN
         ) {
-            actions.push(VoiceInteractionsActions.loadOutboundCampaignCallInfo({uuid: interaction.uuid}));
+            actions.push(VoiceInteractionsActions.loadOutboundCampaignCallInfo({ uuid: interaction.uuid }));
         }
 
         if (msg.context.agent?.id === currentUserId && interaction.newProtocolCallInfo.conferenceType !== ConferenceType.HELPER) {
-            actions.push(CrmDataBridgeActions.updateCrmDataBridgeCallEndReason({callEndReason: msg.context.reason}));
+            actions.push(CrmDataBridgeActions.updateCrmDataBridgeCallEndReason({ callEndReason: msg.context.reason }));
         }
 
-        return interaction;
+        return [interaction, actions];
     }
 
     private handleContactFininishedCallFailure(msg: WsVoiceChannelStatusMsgPayload): void {
@@ -550,25 +650,34 @@ class VoiceInteractionHandler {
         }
     }
 
-    private updActionsIfEmptyCallStatus(interaction: VoiceInteraction, actions: Action[]): void {
+    private updActionsIfEmptyCallStatus(interaction: VoiceInteraction, prevActions: Action[]): Action[] {
+        const actions = [...prevActions];
         if (interaction.callStatus == null) {
-            actions.push(VoiceInteractionsActions.removeInteraction({uuid: interaction.uuid}));
+            actions.push(VoiceInteractionsActions.removeInteraction({ uuid: interaction.uuid }));
         }
+        return actions;
     }
 
-    private updActionsIfCallStatusExists(msg: WsVoiceChannelStatusMsgPayload, interaction: VoiceInteraction, actions: Action[]): void {
+    private updActionsIfCallStatusExists(
+        msg: WsVoiceChannelStatusMsgPayload,
+        interaction: VoiceInteraction,
+        prevActions: Action[]
+    ): Action[] {
+        const actions = [...prevActions];
         if (interaction.callStatus !== null) {
             actions.push(
                 VoiceInteractionsActions.updateInteraction({
                     uuid: interaction.uuid,
-                    interaction,
+                    interaction: LODASH.cloneDeep(interaction),
                     conferenceStatus: msg,
                 })
             );
         }
+        return actions;
     }
 
     private updateHelperQueue(msg: VoiceChannelStatus, interaction: VoiceInteraction): VoiceInteraction {
+        interaction = LODASH.cloneDeep(interaction);
         if (msg.context['helperQueue'] === null) {
             return interaction;
         }
@@ -576,6 +685,7 @@ class VoiceInteractionHandler {
         const queueState = LODASH.get(queue, 'state.state', null);
         const newState: ConferenceProgressStatusWs = queueState ?? msg.status;
 
+        // Update conference buddy
         if (interaction.newProtocolCallInfo.conferenceType === ConferenceType.SINGLE) {
             interaction.newProtocolCallInfo.conferenceType = ConferenceType.MASTER_PREPARATION;
         }
@@ -602,6 +712,7 @@ class VoiceInteractionHandler {
     }
 
     private patchContact(pathPrefix: string, msg: VoiceChannelStatus, interaction: VoiceInteraction): VoiceInteraction {
+        interaction = LODASH.cloneDeep(interaction);
         if (!msg.context['client']) {
             return interaction;
         }
@@ -633,6 +744,7 @@ class VoiceInteractionHandler {
     }
 
     private updateExternalHelper(msg: VoiceChannelStatus, interaction: VoiceInteraction): VoiceInteraction {
+        interaction = LODASH.cloneDeep(interaction);
         if (LODASH.get(msg, 'context.type', null) !== 'External') {
             return this.patchContact('context.contact', msg, interaction);
         }
@@ -674,46 +786,4 @@ class VoiceInteractionHandler {
         return interaction;
     }
 
-    private handleChannelStatusForNewProtocol(
-        msg: WsVoiceChannelStatusMsgPayload,
-        interaction: VoiceInteraction,
-        currentUserId: number
-    ): Observable<Action> {
-        const directionCallType = this.voiceInteractionService.getCallTypeByDirection(msg.direction);
-        const interactionCallType = VoiceInteractionService.getCallType(interaction);
-        const actions: Action[] = [];
-
-        this.updActionsIfCallStatusExists(msg, interaction, actions);
-        this.handleContactFininishedCallFailure(msg);
-        this.handleTransferDisconnectedDuringTransfer(msg, currentUserId);
-
-        interaction = this.ifInteractionFromPrevEvent(interaction, msg.context.contactSessionId, actions);
-
-        if (interaction == null && STARTING_STATUSES.indexOf(this.voiceInteractionService.getInternalCallStatus(msg.status, null)) === -1) {
-            return EMPTY;
-        }
-
-        interaction =
-            interaction == null
-                ? this.updateEmptyInteraction({interaction, msg, actions, directionCallType})
-                : this.updateInteraction(interaction, interactionCallType, directionCallType);
-        interaction = this.updateInteractionWIthConferenceId(interaction, msg);
-        interaction = this.handlePaymentMessage(msg, interaction, actions);
-        interaction = this.updateHelperQueue(msg, interaction);
-        interaction = this.patchContact('context.client', msg, interaction);
-        interaction = this.updateExternalHelper(msg, interaction);
-        interaction = this.updateNewProtocolCallInfo(msg, interaction, currentUserId);
-        interaction = this.checkIfPureConferenceState(msg, interaction);
-        interaction = this.updateInteractionIfActivityContactTypeExists(msg, interaction, directionCallType);
-        interaction = this.updateInteractionIfQueueExists(msg, interaction);
-        interaction = this.updateInteractionIfCampaignExists(msg, interaction, actions);
-        interaction = this.handleReceiveWarmTransfer(msg, interaction, actions);
-        interaction = this.handleNewConference({msg, interaction, actions, currentUserId});
-        interaction = this.handleConferenceDialing({msg, interaction, actions, currentUserId});
-        interaction = this.handleConferenceFinished({msg, interaction, actions, currentUserId});
-
-        this.updActionsIfEmptyCallStatus(interaction, actions);
-
-        return of(...actions);
-    }
 }
