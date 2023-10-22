@@ -28,6 +28,38 @@ class TestHashTable(unittest.TestCase):
 
         self.assertEqual(8, slot)
 
+    def test_seek_slot_for_empty_value(self):
+        value = ''
+        hash_table = HashTable(0, 0)
+
+        slot = hash_table.seek_slot(value)
+
+        self.assertEqual(0, slot)
+
+    def test_seek_slot_for_float_value(self):
+        value = .77777
+        hash_table = HashTable(1, 0)
+
+        slot = hash_table.seek_slot(value)
+
+        self.assertEqual(0, slot)
+
+    def test_seek_slot_for_some_value_1(self):
+        value = ''
+        hash_table = HashTable(1, 0)
+
+        slot = hash_table.seek_slot(value)
+
+        self.assertEqual(0, slot)
+
+    def test_seek_slot_for_some_value_2(self):
+        value = '‘   ц '
+        hash_table = HashTable(1, 0)
+
+        slot = hash_table.seek_slot(value)
+
+        self.assertEqual(0, slot)
+
     def test_seek_slot_with_collision(self):
         value = 'random'
         hash_table = HashTable(17, 2)

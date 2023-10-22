@@ -84,3 +84,10 @@ class TestDynamicArray(unittest.TestCase):
         with self.assertRaises(IndexError):
             test_array.delete(0)
         self.assertEqual(test_array.count, 0)
+
+    def test_insert(self):
+        test_array = DynArray()
+        expected = DynArray().append(12)
+
+        test_array.insert(1, 12)
+        self.assertEqual(test_array.count, expected.count)
