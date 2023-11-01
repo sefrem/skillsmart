@@ -14,11 +14,6 @@ it('assures that checking for pairs happens only one time, just after the cards 
 });
 
 // Тест после
-// Главное отличие здесь, что после инициализации новой игры я смотрю на сообщение, отправленное с бэкенда в вебсокетах
-// и проверяю, что в состоянии игрока ключи, показывающие можно или нельзя делить пары, находятся в верных состояниях.
-// Этот тест более устойчив к изменениям, потому что отвязан от конкретной реализации и просто проверяет, что у объектов
-// игроков в начале игры правильно расчитано состояние.
-//
 
 it('asserts the state of players with split value calculated is sent from the BE', () => {
     jest.spyOn(GameState.prototype, 'getCardFromTop').mockImplementation(function (this: GameState) {
