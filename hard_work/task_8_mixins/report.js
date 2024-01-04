@@ -17,7 +17,7 @@ class System {
 
 const mixin = {
     sayHello() {
-        console.log(`Hello, ${this.users.at(-1).name}`)
+        console.log(`Hello, ${this.users.at(-1)?.name}`)
     }
 }
 
