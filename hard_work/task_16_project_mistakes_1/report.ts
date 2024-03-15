@@ -34,19 +34,11 @@ onCallFinishNotification$ = createEffect(
 );
 
 
-private
-handleConferenceFinishNotification(
-    msg
-:
-WsVoiceChannelFinishMsgPayload,
-    conferenceType
-:
-ConferenceType,
-    currentUserId
-:
-number,
-    isShowWarningOnHelperHangup ? : boolean | null
-)
+private handleConferenceFinishNotification(
+    msg: WsVoiceChannelFinishMsgPayload,
+    conferenceType: ConferenceType,
+    currentUserId: number,
+    isShowWarningOnHelperHangup ?: boolean | null)
 {
     if (msg.status === ConferenceProgressStatusWs.FINISHED && msg.context.callFinishMessage) {
         //We don't show 'transferConfirm' for slave agent
