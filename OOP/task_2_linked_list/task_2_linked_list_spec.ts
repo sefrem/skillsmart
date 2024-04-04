@@ -15,18 +15,8 @@ abstract class LinkedList<T> {
     private ADD_TO_EMPTY_ERR = 2; // список не пустой
     private REPLACE_OK = 1; // последний replace() отработал успешно
     private REPLACE_ERR = 2; // список пуст
-    private FIND_OK = 1; // последний find() отработал успешно
-    private FIND_ERR = 2; // список пуст
-    private REMOVE_ALL_OK = 1; // последний remove_all() отработал успешно
-    private REMOVE_ALL_ERR = 2; // список пуст
     private GET_OK = 1; // последний get() отработал корректно
     private GET_ERR = 2; // список пуст
-    private IS_HEAD_OK = 1; // последний is_head() отработал корректно
-    private IS_HEAD_ERR = 2; // список пуст
-    private IS_TAIL_OK = 1; // последний is_tail() отработал корректно
-    private IS_TAIL_ERR = 2; // список пуст
-    private IS_VALUE_OK = 1; // последний is_value() отработал корректно
-    private IS_VALUE_ERR = 2; // список пуст
 
     // конструктор
 
@@ -74,11 +64,9 @@ abstract class LinkedList<T> {
     // постусловие: значение текущего узла заменено на заданное
     public abstract replace(value: T): void
 
-    // предусловие: список не пустой
     // постусловие: курсор установлен на следующий узел с искомым значением
     public abstract find(value: T): void
 
-    // предусловие: список не пустой
     // постусловие: из списка удалены все узлы с заданным значениям. Курсор установлен на следующий после последнего удаленного узла узел
     // (если он есть) или на предыдущий (если он есть)
     public abstract remove_all(value: T): void
@@ -90,13 +78,10 @@ abstract class LinkedList<T> {
 
     public abstract size(): number
 
-    // предусловие: список не пустой
     public abstract is_head(): boolean
 
-    // предусловие: список не пустой
     public abstract is_tail(): boolean
 
-    // предусловие: список не пустой
     public abstract is_value(): boolean
 
     // дополнительные запросы
@@ -109,12 +94,7 @@ abstract class LinkedList<T> {
     public abstract get_remove_status(): number // возвращает значение REMOVE_*
     public abstract get_add_to_empty_status(): number // возвращает значение ADD_TO_EMPTY_*
     public abstract get_replace_status(): number // возвращает значение REPLACE_*
-    public abstract get_find_status(): number // возвращает значение FIND_*
-    public abstract get_remove_all_status(): number // возвращает значение REMOVE_ALL_*
     public abstract get_get_status(): number // возвращает значение GET_*
-    public abstract get_is_head_status(): number // возвращает значение IS_HEAD_*
-    public abstract get_is_tail_status(): number // возвращает значение IS_TAIL_*
-    public abstract get_is_value_status(): number // возвращает значение IS_VALUE_*
 }
 
 // 2.2
