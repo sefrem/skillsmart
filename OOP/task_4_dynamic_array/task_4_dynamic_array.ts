@@ -51,7 +51,7 @@ export class DynamicArray<T> implements DynamicArraySpec<T> {
     this.capacity = capacity - 1;
   }
 
-  private size(): number {
+  public size(): number {
     return this.array.length;
   }
 
