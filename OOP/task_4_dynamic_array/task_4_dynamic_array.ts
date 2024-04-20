@@ -42,12 +42,13 @@ export class DynamicArray<T> implements DynamicArraySpec<T> {
   private REMOVE_OK = 1; // последний remove() отработал успешно
   private REMOVE_ERR = 2; // индекс выходит за границы массива
 
+  private array: T[] = [];
   private capacity: number = 15;
   private get_item_status: number = this.GET_ITEM_NIL;
   private insert_item_status: number = this.INSERT_ITEM_NIL;
   private remove_status: number = this.REMOVE_NIL;
 
-  constructor(private array: T[] = [], capacity?: number) {
+  constructor(capacity?: number) {
     this.capacity = capacity - 1;
   }
 
@@ -67,11 +68,11 @@ export class DynamicArray<T> implements DynamicArraySpec<T> {
   }
 
   insert(item: T, index: number): void {
-    if (index >= 0 && index <= this.size()) {
-      if (index === this.capacity) {
+    if (index >= 0 && index <= this.capacity) {
+      if (this.size()-1 === this.capacity) {
         this.make_array(2)
       }
-      this.array.splice(index, 0, item)
+      this.array[index] = item;
 
       this.insert_item_status = this.INSERT_ITEM_OK
     } else {
