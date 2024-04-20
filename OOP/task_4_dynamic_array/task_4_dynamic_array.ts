@@ -52,6 +52,10 @@ export class DynamicArray<T> implements DynamicArraySpec<T> {
     this.capacity = capacity - 1;
   }
 
+  public get_iterator() {
+    return this.array.values()
+  }
+
   public size(): number {
     return this.array.length;
   }

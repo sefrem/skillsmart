@@ -30,21 +30,30 @@ abstract class HashTableSpec<T> {
   public abstract size(): number
 
   public abstract get_remove_status(): number
+
+  public abstract get_put_status(): number
 }
 
 
 export class HashTable<T> implements HashTableSpec<T> {
   private REMOVE_NIL = 0;
   private REMOVE_ERR = 2;
+  private PUT_NIL = 0;
+  private PUT_ERR = 2;
 
   private table: DynamicArray<T>;
   private step = 3;
   private capacity = 15;
 
   private remove_status = this.REMOVE_NIL;
+  private put_status = this.PUT_NIL;
 
   constructor() {
     this.table = new DynamicArray<T>(this.capacity);
+  }
+
+  get_iterator() {
+    return this.table.get_iterator()
   }
 
   get(value: T): boolean {
@@ -57,7 +66,12 @@ export class HashTable<T> implements HashTableSpec<T> {
 
   put(value: T): void {
     const slot = this.seek_slot(value);
-    this.table.insert(value, slot);
+    if (slot) {
+      this.table.insert(value, slot);
+      this.put_status = this.table.get_insert_item();
+    } else {
+      this.put_status = this.PUT_ERR
+    }
   }
 
   size(): number {
@@ -121,6 +135,10 @@ export class HashTable<T> implements HashTableSpec<T> {
   }
 
   get_remove_status(): number {
-    return 0;
+    return this.remove_status;
+  }
+
+  get_put_status(): number {
+    return this.put_status;
   }
 }
