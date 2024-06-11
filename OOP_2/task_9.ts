@@ -1,7 +1,7 @@
 
 class General  {
 
-   copy() {
+    copy() {
        return Object.assign({}, this);
    }
 
@@ -25,7 +25,7 @@ class General  {
        return JSON.stringify(this);
    }
 
-    print() {
+   print() {
        console.dir(this);
     }
 
@@ -37,3 +37,5 @@ class General  {
        // В Typescript нельзя вернуть текущий тип, потому что типов нет в рантайме, все объекты имеют один тип object
     }
 }
+
+class Any extends General {}
