@@ -36,6 +36,14 @@ class General  {
     getType() {
        // В Typescript нельзя вернуть текущий тип, потому что типов нет в рантайме, все объекты имеют один тип object
     }
+
+    assignment_attempt(target, source): void {
+        if (source instanceof target) {
+            target = source
+        } else {
+            target = null;
+        }
+    }
 }
 
 class Any extends General {}
