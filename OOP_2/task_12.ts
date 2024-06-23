@@ -5,7 +5,9 @@ class A1 {
 }
 
 class A1_child extends A1 {
-    public method() {}
+    public method() {
+        super.method()
+    }
 }
 
 // Варианты 2-4 в Typescript не поддерживаются
@@ -15,5 +17,7 @@ class A3 {
 }
 
 class A3_child extends A3 {
-    public method() {}
+    public method() {
+        super.method()
+    }
 }
