@@ -1,5 +1,17 @@
 
-class General  {
+export class General  {
+
+    static compare(object_1: any, object_2: any) {
+        for (const key in object_1) {
+            if (typeof object_1[key] === 'object') {
+                this.compare(object_1[key], object_2[key]);
+            }
+            if (object_1[key] !== object_2[key]) {
+                return false
+            }
+        }
+        return true
+    }
 
     copy() {
        return Object.assign({}, this);
@@ -7,18 +19,6 @@ class General  {
 
    deepCopy() {
        return structuredClone(this);
-   }
-
-   static compare(object_1: any, object_2: any) {
-    for (const key in object_1) {
-        if (typeof object_1[key] === 'object') {
-            this.compare(object_1[key], object_2[key]);
-        }
-        if (object_1[key] !== object_2[key]) {
-            return false
-        }
-    }
-    return true
    }
 
    serialize() {
@@ -37,7 +37,7 @@ class General  {
        // В Typescript нельзя вернуть текущий тип, потому что типов нет в рантайме, все объекты имеют один тип object
     }
 
-    assignment_attempt(target, source): void {
+    assignment_attempt(target: any, source: any): void {
         if (source instanceof target) {
             target = source
         } else {
