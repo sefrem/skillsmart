@@ -1,5 +1,3 @@
-
-
 class Car {
     getCar(): Car {
         console.log('Getting a car')
