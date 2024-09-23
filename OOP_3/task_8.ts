@@ -57,9 +57,8 @@ abstract class Field {
     // постусловие: 2 элемента поля по переданным координатам переставлены местами
     public abstract switchElements(coordinates: Tuple<Coordinates>): void
 
-    // предусловие: из поля были удалены элементы
-    // постусловие: в поле добавлены элементы на место удаленных
-    public abstract addElements(coordinates: Tuple<Coordinates>[]): void
+    // постусловие: в поле добавлен элемент по переданным координатам
+    public abstract addElement(coordinates: Coordinates): void
 
     // запросы
 
@@ -112,3 +111,26 @@ abstract class Output {
     public abstract showField()
 }
 
+// gameState: 'idle' | 'move' | 'over';
+
+abstract class GameState {
+
+    constructor() {}
+}
+
+abstract class GameStateIdle extends GameState {
+
+    // предусловия: сгенерировано игровое поле, есть потенциальные ходы
+    // постусловия: осуществлен ход игрока. Состояние игры переведено в GameStateMove
+    public abstract makeMove(inputData: any): GameStateMove
+}
+
+abstract class GameStateMove extends GameState {
+
+    // постусловия: осуществлен поиск выигрышных комбинаций на поле
+    public abstract searchSequences(): void
+
+    // предусловие: найдены выигрышные комбинации
+    // постусловие: обновлена статистика игрока. Состояние игры переведено в GameStateIdle
+    public abstract updatePlayerStatistics()
+}
