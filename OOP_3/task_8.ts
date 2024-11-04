@@ -6,6 +6,22 @@ const rl = readline.createInterface({
 
 type Coordinates = [number, number];
 
+function searchSequence(sequence: string, rowNumber: number, length: number, isCol?: boolean): number[][] {
+    const pattern = new RegExp(`(.)\\1{${length-1}}`, 'g'); // matches exactly three consecutive identical characters
+
+    return Array.from(sequence.matchAll(pattern)).flatMap(match => {
+        const start = match.index;
+        const end = start + match[0].length - 1;
+        return isCol ? [[start, rowNumber], [end, rowNumber]] : [[rowNumber, start], [rowNumber, end]];
+    })
+}
+
+function getRandomCharacter() {
+    const characters = ['A', 'B', 'C', 'D', 'E', 'F'];
+    const rand = Math.floor(Math.random() * characters.length);
+    return characters[rand];
+}
+
 abstract class Tuple<T> {
 
     // конструктор
@@ -73,7 +89,7 @@ abstract class Matrix<T> {
 }
 
 class GameMatrix implements Matrix<string> {
-    matrix: string[][];
+    private matrix: string[][];
 
     constructor(width: number, height: number) {
         this.matrix = Array.from(Array(height), () => new Array(width).fill(''));
@@ -86,10 +102,10 @@ class GameMatrix implements Matrix<string> {
     getCols(): string[] {
         let cols: string[] = []
 
-        for (let i=0; i < this.matrix[0].length; i++) {
+        for (let i = 0; i < this.matrix[0].length; i++) {
             let row = [];
             for (let j = 0; j < this.matrix.length; j++) {
-                row.push(this.getValue([i, j]))
+                row.push(this.getValue([j, i]))
             }
             cols[i] = row.join('')
         }
@@ -97,22 +113,26 @@ class GameMatrix implements Matrix<string> {
     }
 
     getValue(coordinates: Coordinates): string {
-        const [col, row] = coordinates;
+        const [row, col] = coordinates;
         return this.matrix[row][col];
     }
 
     insert(coordinates: Coordinates, value: string): void {
-        const [col, row] = coordinates;
+        const [row, col] = coordinates;
         this.matrix[row][col] = value;
     }
 
     iterate(action: (value: string, coords: Coordinates) => void): void {
-        this.matrix.forEach((row, rowIndex) => row.forEach((value, colIndex) => action(value, [colIndex, rowIndex])))
+        this.matrix.forEach((row, rowIndex) => row.forEach((value, colIndex) => action(value, [rowIndex, colIndex])))
     }
 
     remove(coordinates: Coordinates): void {
-        const [col, row] = coordinates;
+        const [row, col] = coordinates;
         this.matrix[row][col] = '';
+    }
+
+    get fieldView(): string[][] {
+        return this.matrix
     }
 }
 
@@ -141,13 +161,6 @@ abstract class Field {
     public abstract searchSequence(length: number): Tuple<Coordinates>[][]
 }
 
-function getRandomCharacter() {
-    const characters = ['A', 'B', 'C', 'D', 'E', 'F'];
-    const rand = Math.floor(Math.random() * characters.length);
-    return characters[rand];
-}
-
-
 class GameField implements Field {
     private field: GameMatrix;
 
@@ -162,29 +175,67 @@ class GameField implements Field {
     }
 
     removeSequence(coordinates: Tuple<Coordinates>): void {
+        const start: Coordinates = [...coordinates.first];
+        const end: Coordinates = [...coordinates.second];
+        if (start[0] === end[0]) {
+            // means we are removing the horizontal sequence
+            while (start[1] < end[1]) {
+                this.field.remove(start);
+                start[1] += 1;
+            }
+            this.field.remove(end)
+        }
+        if (start[1] === end[1]) {
+            // means we are removing the vertical sequence
+            while (start[0] < end[0]) {
+                this.field.remove(start);
+                start[0] += 1;
+            }
+            this.field.remove(end)
+        }
+    }
+
+    fillSequence(coordinates: Tuple<Coordinates>): void {
+        const start: Coordinates = [...coordinates.first];
+        const end: Coordinates = [...coordinates.second];
+        if (start[0] === end[0]) {
+            // means we are removing the horizontal sequence
+            while (start[1] < end[1]) {
+                this.field.insert(start, getRandomCharacter());
+                start[1] += 1;
+            }
+            this.field.insert(end, getRandomCharacter())
+        }
+        if (start[1] === end[1]) {
+            // means we are removing the vertical sequence
+            while (start[0] < end[0]) {
+                this.field.insert(start, getRandomCharacter());
+                start[0] += 1;
+            }
+            this.field.insert(end, getRandomCharacter())
+        }
+    }
+
+    removeSequences(sequences: Tuple<Coordinates>[][]): void {
+        const [rowSequences, colSequences] = sequences;
+        rowSequences.forEach(coord => this.removeSequence(coord))
+        colSequences.forEach(coord => this.removeSequence(coord))
+    }
+
+    fillSequences(sequences: Tuple<Coordinates>[][]): void {
+        const [rowSequences, colSequences] = sequences;
+        rowSequences.forEach(coord => this.fillSequence(coord))
+        colSequences.forEach(coord => this.fillSequence(coord))
     }
 
     searchSequence(length: number): Tuple<Coordinates>[][] {
-
-        function searchSequence(sequence: string, rowNumber: number): number[][] {
-            const pattern = /(.)\1{2}/g; // matches exactly three consecutive identical characters
-
-            const matches = Array.from(sequence.matchAll(pattern)).flatMap(match => {
-                const start = match.index;
-                const end = start + match[0].length - 1;
-                return [[rowNumber, start], [rowNumber, end]];
-            })
-            return matches
-        }
-
         const matchesRow = this.field.getRows().flatMap((row, index) => {
-           return  searchSequence(row, index).filter((value, index, array) => array.length > 0)
+            return searchSequence(row, index, length).filter((value, index, array) => array.length > 0)
         });
         const matchesCol = this.field.getCols().flatMap((col, index) => {
-            return  searchSequence(col, index).filter((value, index, array) => array.length > 0)
+            return searchSequence(col, index, length, true).filter((value, index, array) => array.length > 0)
         })
-
-        const result: Tuple<Coordinates>[][]  = [[],[]]
+        const result: Tuple<Coordinates>[][] = [[], []]
         while (matchesRow.length) {
             const [first, second] = matchesRow.splice(0, 2);
             result[0].push(new CoordinatesTuple(first as Coordinates, second as Coordinates))
@@ -203,17 +254,22 @@ class GameField implements Field {
         this.field.insert(coordinates.first, valueB);
         this.field.insert(coordinates.second, valueA);
     }
-}
 
-const gam = new GameField(5, 6);
-gam.searchSequence(3)
+    get fieldView() {
+        return this.field.fieldView
+    }
+}
 
 abstract class Rules {
 
-    constructor() {
+    // принимает как параметры размеры поля
+    constructor(width: number, height: number) {
     }
 
     // команды:
+
+    // постусловия: проверяет валидны ли входные данные
+    public abstract isInputValid(input: string): boolean
 
     // постусловия: проверяет валиден ли ход игрока
     public abstract isMoveValid(coordinates: Tuple<Coordinates>): boolean
@@ -256,6 +312,12 @@ abstract class Output {
 
     // постусловие: в консоль выведено игровое поле
     public abstract showField(): void
+
+    // постусловие: в консоль выведено количество очков игрока
+    public abstract showPoints(): void
+
+    // постусловие: в консоль выведено сообщение о невалидном ходе
+    public abstract invalidMove(): void
 }
 
 
@@ -279,18 +341,24 @@ abstract class StateMove extends State {
 
     // предусловие: найдены выигрышные комбинации
     // постусловие: обновлена статистика игрока. Состояние игры переведено в GameStateIdle
-    public abstract updatePlayerStatistics(): void
+    public abstract updatePlayerStatistics(numberOfSequences: number): void
 }
 
 
 class Game {
-    private gameState: StateIdle | StateMove;
-
-    // private gameField: Field
+    gameState: StateIdle | StateMove;
+    private gameField: GameField;
+    private gameStatistics: GameStatistics;
+    private gameOutput: GameOutput;
+    private gameRules: GameRules;
 
     constructor() {
-        this.gameState = new GameStateIdle(this.setState.bind(this));
-        // this.gameField = new Field()
+        this.gameField = new GameField(5, 5);
+        this.gameStatistics = new GameStatistics();
+        this.gameOutput = new GameOutput(this.gameField, this.gameStatistics);
+        this.gameRules = new GameRules(5, 5)
+        this.gameOutput.showField();
+        this.gameState = new GameStateIdle(this.setState.bind(this), this.gameField, this.gameStatistics, this.gameOutput, this.gameRules);
     }
 
     setState(gameState: any): void {
@@ -300,14 +368,29 @@ class Game {
 }
 
 class GameStateMove implements StateMove {
-    constructor(private move: Tuple<Coordinates>) {
-        console.log('GameStateMove', this.move)
+    constructor(private setGameState: (gameState: State) => void,
+                private gameField: GameField,
+                private gameStatistics: GameStatistics,
+                private gameOutput: GameOutput,
+                private gameRules: GameRules
+    ) {
+        this.searchSequences();
     }
 
     searchSequences(): void {
+        const sequences = this.gameField.searchSequence(3);
+        this.gameField.removeSequences(sequences);
+        this.gameOutput.showField();
+        this.gameField.fillSequences(sequences);
+        this.gameOutput.showField();
+
+        this.updatePlayerStatistics(sequences[0].length + sequences[1].length)
+        this.setGameState(new GameStateIdle(this.setGameState, this.gameField, this.gameStatistics, this.gameOutput, this.gameRules))
     }
 
-    updatePlayerStatistics(): void {
+    updatePlayerStatistics(numberOfSequences: number): void {
+        this.gameStatistics.addPoints(numberOfSequences);
+        this.gameOutput.showPoints()
     }
 }
 
@@ -315,27 +398,46 @@ class GameStateMove implements StateMove {
 class GameStateIdle implements StateIdle {
     private userInput: UserInput;
 
-    constructor(private setGameState: (gameState: GameStateMove) => void) {
-        this.userInput = new UserInput(this.makeMove.bind(this));
+    constructor(private setGameState: (gameState: State) => void,
+                private gameField: GameField,
+                private gameStatistics: GameStatistics,
+                private gameOutput: GameOutput,
+                private gameRules: GameRules,
+    ) {
+        this.userInput = new UserInput(this.makeMove.bind(this), this.gameRules, this.gameOutput);
         this.userInput.waitForInput();
     }
 
-
     makeMove(inputData: Tuple<Coordinates>): StateMove | any {
-        this.setGameState(new GameStateMove(inputData))
+        this.gameField.switchElements(inputData);
+        this.gameOutput.showField();
+        this.gameStatistics.addMove(inputData);
+        this.setGameState(new GameStateMove(this.setGameState, this.gameField, this.gameStatistics, this.gameOutput, this.gameRules))
     }
 }
 
 class UserInput implements Input {
-
-    constructor(private setMove: (inputData: Tuple<Coordinates>) => void) {
+    constructor(private setMove: (inputData: Tuple<Coordinates>) => void,
+                private gameRules: GameRules,
+                private gameOutput: GameOutput) {
     }
 
     createMove(inputData: any): void {
+        if (!this.gameRules.isInputValid(inputData)) {
+            this.gameOutput.invalidMove()
+            this.waitForInput();
+            return;
+        }
         const [first, second] = inputData.split(',');
         const firstElement: Coordinates = [Number(first[0]), Number(first[1])]
-        const secondElement: Coordinates = [Number(second[0]), Number(second[1])]
-        this.setMove(new CoordinatesTuple(firstElement, secondElement))
+        const secondElement: Coordinates = [Number(second[0]), Number(second[1])];
+        const move = new CoordinatesTuple(firstElement, secondElement);
+        if (!this.gameRules.isMoveValid(move)) {
+            this.gameOutput.invalidMove()
+            this.waitForInput();
+            return;
+        }
+        this.setMove(move)
     }
 
     waitForInput(): void {
@@ -345,8 +447,74 @@ class UserInput implements Input {
                 process.exit(0)
             } else {
                 createMove(move);
-                process.exit(0);
             }
         });
     }
 }
+
+class GameOutput implements Output {
+    constructor(private gameField: GameField, private gameStatistics: GameStatistics) {
+    }
+
+    showField(): void {
+        console.log(this.gameField.fieldView)
+    }
+
+    showPoints(): void {
+        console.log("Player's points ", this.gameStatistics.playerPoints)
+    }
+
+    invalidMove(): void {
+        console.log('The move is invalid. Please make a new move')
+    }
+
+}
+
+class GameStatistics implements Statistics {
+    private moves: Tuple<Coordinates>[] = [];
+    private points: number = 0;
+
+    addMove(move: Tuple<Coordinates>): void {
+        this.moves.push(move);
+    }
+
+    addPoints(numberOfSequences: number): void {
+        this.points += numberOfSequences;
+    }
+
+    get playerPoints(): number {
+        return this.points
+    }
+}
+
+class GameRules implements Rules {
+
+    constructor(private width: number, private height: number) {
+    }
+
+    getPointsPerMove(): number {
+        return 0;
+    }
+
+    isInputValid(input: string): boolean {
+        const [first, second] = input.split(',');
+        return !(isNaN(Number(first)) || isNaN(Number(second)));
+
+    }
+
+    isMoveValid(coordinates: Tuple<Coordinates>): boolean {
+        const [start1, end1] = coordinates.first;
+        const [start2, end2] = coordinates.second;
+        if (start1 >= this.width || start2 >= this.width) {
+            return false
+        }
+        if (end1 >= this.height || end2 >= this.height) {
+            return false
+        }
+
+        return true;
+    }
+
+}
+
+const game = new Game();
