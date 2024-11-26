@@ -2,16 +2,23 @@ import {Rules} from "../ADT/rules";
 import {Tuple} from "../ADT/tuple";
 import {Coordinates} from "../ADT/types";
 
+const VALID_LETTERS = ['A', 'B', 'C', 'D', 'E'];
+
 export class GameRules implements Rules {
-    constructor(private width: number, private height: number) {}
+    constructor(private width: number, private height: number) {
+    }
 
     getPointsPerMove(): number {
         return 0;
     }
 
     isInputValid(input: string): boolean {
-        const [first, second] = input.split(',');
-        return !(isNaN(Number(first)) || isNaN(Number(second)));
+        try {
+            const [first, second] = input.split(',');
+            return !(isNaN(Number(first[1])) || isNaN(Number(second[1]))) && VALID_LETTERS.includes(first[0]) && VALID_LETTERS.includes(second[0]);
+        } catch {
+            return false
+        }
     }
 
     isMoveValid(coordinates: Tuple<Coordinates>): boolean {

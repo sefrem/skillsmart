@@ -5,8 +5,7 @@ export abstract class Matrix<T> {
 
     // конструктор
     // постусловие: создана новая пустая матрица нужного размера
-    constructor(width: number, height: number) {
-    }
+    constructor(width: number, height: number) {}
 
     // команды
 

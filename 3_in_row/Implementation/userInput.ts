@@ -18,12 +18,12 @@ export class UserInput implements Input {
     }
 
     createMove(inputData: any): void {
-        const input = this.transformInput(inputData);
-        if (!this.gameRules.isInputValid(input)) {
+        if (!this.gameRules.isInputValid(inputData)) {
             this.gameOutput.invalidMove()
             this.waitForInput();
             return;
         }
+        const input = this.transformInput(inputData);
         const [first, second] = input.split(',');
         const firstElement: Coordinates = [Number(first[0]), Number(first[1])]
         const secondElement: Coordinates = [Number(second[0]), Number(second[1])];

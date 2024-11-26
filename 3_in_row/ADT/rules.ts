@@ -4,8 +4,7 @@ import {Coordinates} from "./types";
 export abstract class Rules {
 
     // принимает как параметры размеры поля
-    constructor(width: number, height: number) {
-    }
+    constructor(width: number, height: number) {}
 
     // команды:
 

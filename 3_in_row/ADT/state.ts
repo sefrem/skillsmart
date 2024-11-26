@@ -1,10 +1,7 @@
 
 
 export abstract class State {
-
     constructor() {}
-
-    // public abstract setGameState(gameState: State): void
 }
 
 export abstract class StateIdle extends State {
